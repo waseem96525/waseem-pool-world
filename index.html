@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Waseem Pool World</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080c12;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;display:flex;justify-content:center;padding:10px;min-height:100vh;overflow-x:hidden;background-image:radial-gradient(ellipse at 50% 0%,#1a1520 0%,#080c12 70%)}
+.game{width:100%;max-width:1400px}h1{text-align:center;margin:0 0 10px;font-size:clamp(20px,4vw,36px);background:linear-gradient(135deg,#ffd34d,#ff6b35,#ffd34d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;letter-spacing:1px}
+.mode-select{display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.mode-btn{padding:7px 14px;border:2px solid #2a3545;border-radius:10px;background:rgba(20,28,38,.8);color:#8a99a8;cursor:pointer;font-size:clamp(11px,2vw,14px);font-weight:600;transition:all .3s ease;backdrop-filter:blur(4px);white-space:nowrap}
+.mode-btn.active{border-color:#ffd34d;color:#ffd34d;background:rgba(255,211,77,.1);box-shadow:0 0 12px rgba(255,211,77,.15)}
+.mode-btn:hover{border-color:#ffd34d;transform:translateY(-1px)}
+.layout{display:grid;grid-template-columns:1fr 280px;gap:12px;align-items:start}.tableWrap{background:linear-gradient(135deg,#5a3520,#3a2010);padding:10px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);position:relative;overflow:hidden}
+.tableWrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.03) 0%,transparent 70%);pointer-events:none;border-radius:16px}
+canvas{display:block;width:100%;height:auto;border-radius:10px;touch-action:none;cursor:crosshair}
+.panel{background:rgba(20,28,38,.9);border:1px solid #2a3545;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:3px;backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.stat{display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid #1e2a38;border-radius:6px;transition:background .2s}.stat:hover{background:rgba(255,211,77,.03)}.active{color:#ffd34d;font-weight:700}
+.power-bar-wrap{margin:6px 0;height:10px;background:#1a2535;border-radius:5px;overflow:hidden;border:1px solid #2a3545}
+.power-bar{height:100%;width:0%;background:linear-gradient(90deg,#2ecc71,#f1c40f,#e74c3c);border-radius:5px;transition:width .05s;box-shadow:0 0 8px rgba(255,211,77,.2)}
+.power-text{text-align:center;font-size:11px;color:#6a7a8a;margin-top:2px}
+button{width:100%;min-height:44px;margin-top:6px;border:0;border-radius:10px;background:linear-gradient(135deg,#e6b83f,#d4a030);color:#1a1a1a;font-weight:700;cursor:pointer;font-size:14px;transition:all .25s ease;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 2px 8px rgba(230,184,63,.2)}
+button:hover{transform:translateY(-2px);filter:brightness(1.1);box-shadow:0 4px 16px rgba(230,184,63,.3)}
+button:active{transform:translateY(0)}
+button.secondary{background:linear-gradient(135deg,#2a3545,#1e2a38);color:#8a99a8;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+button.secondary:hover{color:#ffd34d;box-shadow:0 4px 16px rgba(255,211,77,.15)}
+.message{margin-top:6px;padding:10px 12px;border-radius:10px;background:rgba(10,16,22,.9);line-height:1.4;font-size:clamp(11px,1.8vw,13px);min-height:44px;border:1px solid #1e2a38;color:#b0bec5;transition:all .3s}
+.spin{margin-top:6px}.spin input{width:100%;accent-color:#ffd34d}.small{font-size:11px;color:#6a7a8a;margin-top:2px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;backdrop-filter:blur(6px)}
+.overlay.show{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.win{background:linear-gradient(135deg,#1a2535,#0f1a25);border:1px solid #ffd34d;border-radius:20px;padding:clamp(20px,4vw,30px);text-align:center;width:min(440px,90%);box-shadow:0 0 60px rgba(255,211,77,.1),0 20px 60px rgba(0,0,0,.5);animation:slideUp .4s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.win h2{font-size:clamp(24px,5vw,32px);margin:0 0 10px;color:#ffd34d;text-shadow:0 0 20px rgba(255,211,77,.3)}
+.timer{color:#e74c3c;font-weight:700;font-size:18px;animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.mode-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;margin-left:6px}
+.badge-vs{background:rgba(255,211,77,.2);color:#ffd34d}
+.badge-ai{background:rgba(68,170,255,.2);color:#44aaff}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.score-card{background:rgba(10,16,22,.8);border-radius:10px;padding:10px;text-align:center;border:1px solid #1e2a38;transition:all .3s}
+.score-card:hover{border-color:#2a3545;transform:translateY(-1px)}
+.score-card .label{font-size:11px;color:#6a7a8a;text-transform:uppercase;letter-spacing:1px}
+.score-card .val{font-size:clamp(18px,3vw,24px);font-weight:800;margin-top:2px}
+.history{max-height:100px;overflow-y:auto;font-size:11px;color:#6a7a8a;line-height:1.8;margin-top:6px;scrollbar-width:thin;scrollbar-color:#2a3545 transparent}
+.history div{padding:2px 0;border-bottom:1px solid #1e2a38}
+.highscores{margin-top:8px;text-align:left;font-size:12px;color:#6a7a8a;max-height:180px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a3545 transparent}
+.highscores div{padding:3px 0;border-bottom:1px solid #1e2a38}
+.hs-title{color:#ffd34d;font-weight:700;font-size:14px;margin-bottom:4px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.float{animation:float 3s ease-in-out infinite}
+@media(max-width:900px){
+.layout{grid-template-columns:1fr;gap:12px}
+.panel{flex-direction:row;flex-wrap:wrap;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.panel>*{min-width:0}
+.message{grid-column:1/-1}
+.spin{margin-top:0}
+.stats-grid{grid-template-columns:1fr 1fr}
+.tableWrap{padding:8px}
+}
+@media(max-width:600px){
+body{padding:6px}
+.mode-select{gap:4px}
+.mode-btn{padding:6px 10px;font-size:11px}
+.panel{grid-template-columns:1fr;display:block}
+.stats-grid{grid-template-columns:1fr 1fr}
+.win{padding:20px}
+.tableWrap{padding:6px;border-radius:12px}
+}
+@media(max-width:400px){
+.mode-btn{padding:5px 8px;font-size:10px}
+button{min-height:40px;font-size:12px}
+}
+@media(hover:none)and(pointer:coarse){
+button{min-height:48px}
+}
+</style>
+</head>
+<body>
+<div class="game">
+<h1 class="float">🎱 Waseem Pool World</h1>
+<div class="mode-select">
+<button class="mode-btn active" id="modeVs">🎮 VS Player</button>
+<button class="mode-btn" id="modeAi">🤖 vs AI</button>
+<button class="mode-btn active" id="mode8ball">🎱 8-Ball</button>
+<button class="mode-btn" id="mode9ball">🎯 9-Ball</button>
+<button class="mode-btn" id="modeStraight">🔢 Straight</button>
+</div>
+<div class="layout">
+<div class="tableWrap"><canvas id="table"></canvas></div>
+<div class="panel">
+<div class="stats-grid">
+<div class="score-card"><div class="label">Player 1</div><div class="val" id="p1" style="color:#ffd34d">0</div></div>
+<div class="score-card"><div class="label">Player 2</div><div class="val" id="p2">0</div></div>
+</div>
+<div class="stat"><span>Turn</span><strong id="turn">Player 1</strong> <span id="modeBadge" class="mode-badge badge-vs">VS</span></div>
+<div class="stat"><span>Fouls</span><strong id="fouls">P1: 0 | P2: 0</strong></div>
+<div class="stat"><span>Round</span><strong id="round">1</strong></div>
+<div class="stat"><span>Shots</span><strong id="shots">0</strong></div>
+<div class="timer" id="timerWrap" style="display:none"><span>⏱️ </span><span id="timer" class="timer">30</span></div>
+<div class="power-bar-wrap"><div class="power-bar" id="powerBar"></div></div>
+<div class="power-text" id="powerText">⚡ Power: 0%</div>
+<div class="spin"><label>Spin / strike point</label><input id="spin" type="range" min="-1" max="1" step=".01" value="0"><div class="small" id="spinText">⚙️ Center</div></div>
+<button id="restart">🔄 New Game</button>
+<button id="undo" class="secondary">↩ Undo Shot</button>
+<div class="message" id="message">🎯 Drag backward from the cue ball and release to shoot!</div>
+<div class="history" id="history"></div>
+</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay"><div class="win"><h2 id="winner"></h2><p id="final"></p><div id="finalScores" style="margin:10px 0"></div><div class="highscores" id="highscoresWin"></div><button id="rematch">🔄 Rematch</button><button id="home" class="secondary" style="margin-top:6px">🏠 Home</button></div></div>
+
+<script>
+const c=document.getElementById("table"),x=c.getContext("2d"),W=900,H=500,rail=38,R=12;
+const pockets=[{x:rail,y:rail},{x:450,y:rail},{x:W-rail,y:rail},{x:rail,y:H-rail},{x:450,y:H-rail},{x:W-rail,y:H-rail}];
+const colors=["#f7f7f2","#e8c43a","#326bd3","#d9483f","#7544bd","#e59a25","#258e61","#9e3434","#111","#e8c43a","#326bd3","#d9483f","#7544bd","#e59a25","#258e61","#9e3434"];
+let balls=[],turn=0,scores=[0,0],fouls=[0,0],aim=false,mouse={x:0,y:0},gameOver=false,ballInHand=false,raf,mode="vs",gameMode="8ball",timerInterval=null,timerLeft=0,timerEnabled=false,particles=[],ghostTrails=[],undoStack=[],shotCount=0,combo=0,shotHistory=[];
+const spinEl=document.getElementById("spin"),msg=document.getElementById("message");
+
+function makeBall(px,py,col,num){return{x:px,y:py,vx:0,vy:0,spin:0,r:R,c:col,num,active:true}}
+function resizeCanvas(){
+ let wrap=c.parentElement;let w=wrap.clientWidth-20;let ratio=W/H;
+ let h=Math.min(w/ratio,window.innerHeight-300);
+ if(h<200)h=200;w=h*ratio;
+ c.width=W;c.height=H;c.style.width=w+"px";c.style.height=h+"px";
+}
+function reset(){
+ cancelAnimationFrame(raf);balls=[];scores=[0,0];fouls=[0,0];turn=0;gameOver=false;ballInHand=false;particles=[];ghostTrails=[];undoStack=[];shotCount=0;combo=0;timerEnabled=false;clearInterval(timerInterval);
+ resizeCanvas();
+ balls.push(makeBall(245,250,"#f7f7f2",0));
+ let n=0,sx=650,sep=25.2;
+ for(let row=0;row<5;row++)for(let col=0;col<=row;col++)balls.push(makeBall(sx+row*21.7,250+(col-row/2)*sep,colors[n],++n));
+ if(gameMode==="9ball"){balls=balls.filter(b=>b.num<=9);balls.sort((a,b)=>a.num-b.num)}
+ msg.textContent="🎯 Drag backward from the cue ball and release to shoot!";
+ update();loop();
+}
+function update(){
+ document.getElementById("p1").textContent=scores[0];
+ document.getElementById("p2").textContent=scores[1];
+ document.getElementById("turn").textContent="Player "+(turn+1);
+ document.getElementById("fouls").textContent=`P1: ${fouls[0]} | P2: ${fouls[1]}`;
+ document.getElementById("spinText").textContent=+spinEl.value>.05?"⚡ Topspin":+spinEl.value<-.05?"⚡ Backspin":"⚙️ Center";
+ document.getElementById("modeBadge").textContent=mode==="ai"?"🤖 AI":"👥 VS";
+ document.getElementById("modeBadge").className="mode-badge "+(mode==="ai"?"badge-ai":"badge-vs");
+ document.getElementById("round").textContent=Math.floor(undoStack.length/2)+1;
+ document.getElementById("shots").textContent=shotCount;
+}
+function pos(e){let q=c.getBoundingClientRect();return{x:(e.clientX-q.left)*W/q.width,y:(e.clientY-q.top)*H/q.height}}
+c.addEventListener("pointerdown",e=>{
+ if(gameOver||aiThinking)return;let p=pos(e),cue=balls[0];
+ if(ballInHand){cue.x=Math.max(rail+R,Math.min(W-rail-R,p.x));cue.y=Math.max(rail+R,Math.min(H-rail-R,p.y));saveState();return}
+ if(cue.active&&Math.hypot(p.x-cue.x,p.y-cue.y)<45){aim=true;mouse=p;c.setPointerCapture(e.pointerId)}
+});
+c.addEventListener("pointermove",e=>{if(aim)mouse=pos(e)});
+c.addEventListener("pointerup",e=>{
+ if(!aim||aiThinking)return;mouse=pos(e);aim=false;let q=balls[0],dx=q.x-mouse.x,dy=q.y-mouse.y,d=Math.hypot(dx,dy);
+ if(d<7)return;
+ let power=Math.min(d,180)*.085,nx=dx/d,ny=dy/d;q.vx=nx*power;q.vy=ny*power;q.spin=+spinEl.value*power*.65;
+ ballInHand=false;shotCount++;saveState();shotStart();update();
+});
+function saveState(){undoStack.push({balls:balls.map(b=>({...b,active:b.active,vx:b.vx,vy:b.vy,spin:b.spin,x:b.x,y:b.y})),turn,score:[...scores],foul:[...fouls],shotCount})}
+function undo(){
+ if(!undoStack.length)return;
+ let s=undoStack.pop();
+ if(s===null){msg.textContent="⚠️ Cannot undo a foul turn!";return}
+ balls=s.balls;turn=s.turn;scores=[...s.score];fouls=[...s.foul];shotCount=s.shotCount;
+ if(shotHistory.length)shotHistory.pop();
+ particles=[];ghostTrails=[];combo=0;msg.textContent="↩ Turn undone!";update();updateHistory();
+}
+document.getElementById("undo").onclick=undo;
+
+function shotStart(){let before=balls.filter(b=>b.active&&b.num>0).length;msg.textContent=`🎯 Player ${turn+1} shooting...`;simulateUntilStopped(before)}
+function simulateUntilStopped(before){
+ let elapsed=0;function step(){physics(.016);draw();elapsed+=16;
+ if(elapsed<15000 && balls.some(b=>b.active&&(Math.hypot(b.vx,b.vy)>.035||Math.abs(b.spin)>.035))){requestAnimationFrame(step)}
+ else finishShot(before)}step();
+}
+function finishShot(before){
+ let after=balls.filter(b=>b.active&&b.num>0).length,pocketed=before-after;
+ shotHistory.push({player:turn+1,pocketed});
+ if(shotHistory.length>20)shotHistory.shift();
+ updateHistory();
+ if(pocketed>0){
+  combo++;let bonus=combo>1?Math.floor(combo*5):0;scores[turn]+=pocketed*10+bonus;
+  if(combo>1)msg.textContent=`🔥 Combo x${combo}! P${turn+1} pocketed ${pocketed} ball${pocketed>1?"s":""} (+${bonus} bonus)!`;
+  else msg.textContent=`✅ Player ${turn+1} pocketed ${pocketed} ball${pocketed>1?"s":""}. Continue!`;
+  addPocketParticles();update()
+ }
+ else {combo=0;if(mode==="ai"&&turn===1)aiThink();else switchTurn("❌ Miss — turn passes to Player "+(turn===0?2:1)+".")}
+ if(after===0){win(turn);return}update();
+ if(checkModeWin())return;
+}
+function checkModeWin(){
+ if(gameMode==="9ball"){let nine=balls.find(b=>b.num===9&&b.active);if(!nine&&balls.find(b=>b.num===9)){win(turn);return}}
+ if(gameMode==="8ball"){let eight=balls.find(b=>b.num===8&&b.active);let solids=balls.filter(b=>b.num>=1&&b.num<=7&&b.active);let stripes=balls.filter(b=>b.num>=9&&b.num<=15&&b.active);if(eight&&scores[turn]>=8){if(!solids.length&&!stripes.length){win(turn);return}}}
+ return false;
+}
+function switchTurn(text){msg.textContent=text;turn=1-turn;ballInHand=false;undoStack.push(null);if(timerEnabled)startTimer();update()}
+function foul(reason){
+ fouls[turn]++;let offender=turn+1;turn=1-turn;ballInHand=true;
+ let cue=balls[0];cue.active=true;cue.vx=cue.vy=cue.spin=0;cue.x=245;cue.y=250;
+ msg.textContent=`⚠️ FOUL — P${offender}: ${reason} P${turn+1} has ball-in-hand!`;addFoulParticles();undoStack.push(null);if(timerEnabled)startTimer();update();playFoulSound();
+}
+function win(p){gameOver=true;clearInterval(timerInterval);document.getElementById("winner").textContent=`🏆 Player ${p+1} Wins!`;document.getElementById("final").textContent=`Final score: P1 ${scores[0]} — P2 ${scores[1]}`;document.getElementById("finalScores").innerHTML=`Mode: ${gameMode.toUpperCase()} | Shots: ${shotCount} | Rounds: ${Math.floor(undoStack.length/2)+1}`;showOverlay();saveHighScore(p+1,scores[p]);addWinParticles();playWinSound()}
+
+let aiThinking=false;
+function aiThink(){aiThinking=true;msg.textContent="🤖 AI is thinking...";setTimeout(()=>{aiShot();aiThinking=false},800+Math.random()*600)}
+function aiShot(){
+ let cue=balls[0],target=null,minD=Infinity;
+ for(let b of balls){if(!b.active||b.num===0||b.num===8)continue;let d=Math.hypot(b.x-245,b.y-250);if(d<minD){minD=d;target=b}}
+ if(!target){for(let b of balls){if(!b.active||b.num===0)continue;let d=Math.hypot(b.x-245,b.y-250);if(d<minD){minD=d;target=b}}}
+ let sx=target?target.x-25:450,sy=target?target.y:250;
+ let dx=cue.x-sx,dy=cue.y-sy,d=Math.hypot(dx,dy);
+ cue.vx=dx/d*4;cue.vy=dy/d*4;cue.spin=0;ballInHand=false;saveState();shotStart();update();
+}
+
+function setMode(m){mode=m;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));document.getElementById(m==='ai'?'modeAi':'modeVs').classList.add('active');reset()}
+function setGameMode(g){gameMode=g;document.querySelectorAll('.mode-btn[id^="mode"]').forEach(b=>b.classList.remove('active'));let map={'8ball':'mode8ball','9ball':'mode9ball','straight':'modeStraight'};document.getElementById(map[g]).classList.add('active');reset()}
+
+function startTimer(){if(!timerEnabled)return;clearInterval(timerInterval);timerLeft=30;timerInterval=setInterval(()=>{timerLeft--;document.getElementById("timer").textContent=timerLeft;if(timerLeft<=5)document.getElementById("timerWrap").classList.add("warning");if(timerLeft<=0){clearInterval(timerInterval);document.getElementById("timerWrap").classList.remove("warning");foul("⏰ Time expired!")}},1000);document.getElementById("timerWrap").style.display="inline"}
+
+function addPocketParticles(){for(let i=0;i<20;i++){let p=pockets[Math.floor(Math.random()*pockets.length)];particles.push({x:p.x,y:p.y,vx:(Math.random()-.5)*10,vy:(Math.random()-.5)*10,life:1,size:Math.random()*5+2,color:Math.random()>.5?"#ffd34d":"#fff"})}}
+function addFoulParticles(){for(let i=0;i<15;i++)particles.push({x:450,y:250,vx:Math.random()*.5-.25,vy:Math.random()*.5-.25,life:1,size:Math.random()*4+2,color:"#e74c3c"})}
+function addWinParticles(){for(let i=0;i<80;i++)particles.push({x:450,y:250,vx:Math.random()*.8-.4,vy:Math.random()*.8-.4,life:1,size:Math.random()*8+3,color:colors[Math.floor(Math.random()*15)]})}
+function updateHistory(){let el=document.getElementById("history");if(!el)return;let html="<div class='hs-title'>📜 Shot Log</div>";shotHistory.forEach((s)=>{let p=s.player===1?"P1":"P2";html+=`<div>${p} → ${s.pocketed} ball${s.pocketed>1?"s":""}</div>`});el.innerHTML=html}
+function updateParticles(){for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.95;p.vy*=.95;p.life-=.025;if(p.life<=0)particles.splice(i,1)}}
+function drawParticles(){for(let p of particles){x.globalAlpha=p.life;x.fillStyle=p.color;x.beginPath();x.arc(p.x,p.y,p.size,0,Math.PI*2);x.fill()}x.globalAlpha=1}
+
+function addGhostTrail(){if(Math.random()>.25)return;let active=balls.filter(b=>b.active&&Math.hypot(b.vx,b.vy)>.5);if(!active.length)return;let b=active[Math.floor(Math.random()*active.length)];ghostTrails.push({x:b.x,y:b.y,life:.12})}
+function updateGhostTrails(){for(let i=ghostTrails.length-1;i>=0;i--){ghostTrails[i].life-=.006;if(ghostTrails[i].life<=0)ghostTrails.splice(i,1)}}
+function drawGhostTrails(){for(let t of ghostTrails){x.globalAlpha=t.life*.12;x.fillStyle="#fff";x.beginPath();x.arc(t.x,t.y,R*.4,0,Math.PI*2);x.fill()}x.globalAlpha=1}
+
+let powerLevel=0;
+function updatePower(){if(aim&&!ballInHand){powerLevel=Math.min(powerLevel+.4,100);document.getElementById("powerBar").style.width=powerLevel+"%";document.getElementById("powerText").textContent=`⚡ Power: ${Math.round(powerLevel)}%`}else{powerLevel=0;document.getElementById("powerBar").style.width="0%";document.getElementById("powerText").textContent="⚡ Power: 0%"}}
+
+let audioCtx=null;
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
+function playSound(freq,dur,type="sine",vol=.3){initAudio();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=vol;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}
+function playHitSound(){playSound(800,.08,"square",.08)}
+function playPocketSound(){playSound(1200,.3,"sine",.15);setTimeout(()=>playSound(900,.2,"sine",.12),80)}
+function playFoulSound(){playSound(200,.5,"sawtooth",.12)}
+function playWinSound(){playSound(523,.15,"sine",.15);setTimeout(()=>playSound(659,.15,"sine",.15),150);setTimeout(()=>playSound(784,.2,"sine",.15),300);setTimeout(()=>playSound(1047,.3,"sine",.15),450)}
+
+function physics(dt){
+ let active=balls.filter(b=>b.active);
+ for(let b of active){
+ b.x+=b.vx*dt*60;b.y+=b.vy*dt*60;b.vx*=Math.pow(.985,dt*60);b.vy*=Math.pow(.985,dt*60);b.spin*=Math.pow(.975,dt*60);
+ if(Math.hypot(b.vx,b.vy)<.025)b.vx=b.vy=0;
+ for(let p of pockets)if(Math.hypot(b.x-p.x,b.y-p.y)<26){b.active=false;b.vx=b.vy=b.spin=0;if(b.num===0){foul("💥 Cue ball scratch.");playFoulSound();return}else{scores[turn]+=10;playPocketSound()}addPocketParticles();if(!b.active)continue}
+ if(b.x<rail+R){b.x=rail+R;b.vx=Math.abs(b.vx)*.91;playHitSound()}
+ if(b.x>W-rail-R){b.x=W-rail-R;b.vx=-Math.abs(b.vx)*.91;playHitSound()}
+ if(b.y<rail+R){b.y=rail+R;b.vy=Math.abs(b.vy)*.91;playHitSound()}
+ if(b.y>H-rail-R){b.y=H-rail-R;b.vy=-Math.abs(b.vy)*.91;playHitSound()}
+ }
+ for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++){
+ let a=active[i],b=active[j];if(!a.active||!b.active)continue;
+ let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),min=a.r+b.r;if(!d||d>=min)continue;
+ let nx=dx/d,ny=dy/d,o=min-d;a.x-=nx*o/2;a.y-=ny*o/2;b.x+=nx*o/2;b.y+=ny*o/2;
+ let rv=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(rv>0){let jv=-(1+.97)*rv/2;a.vx-=jv*nx;a.vy-=jv*ny;b.vx+=jv*nx;b.vy+=jv*ny;playHitSound()}
+ }
+}
+function draw(){
+ x.clearRect(0,0,W,H);
+ let railGrad=x.createLinearGradient(0,0,0,H);
+ railGrad.addColorStop(0,"#4a2818");railGrad.addColorStop(.3,"#6b4428");railGrad.addColorStop(.5,"#5a3520");railGrad.addColorStop(.7,"#6b4428");railGrad.addColorStop(1,"#4a2818");
+ x.fillStyle=railGrad;x.fillRect(0,0,W,H);
+ let tableGrad=x.createRadialGradient(W/2,H/2,10,W/2,H/2,350);
+ tableGrad.addColorStop(0,"#1a7a50");tableGrad.addColorStop(0.5,"#126541");tableGrad.addColorStop(1,"#0e4d30");
+ x.fillStyle=tableGrad;x.fillRect(rail,rail,W-rail*2,H-rail*2);
+ x.strokeStyle="rgba(255,255,255,.04)";x.lineWidth=1;for(let i=0;i<20;i++){x.beginPath();x.moveTo(rail+Math.random()*(W-rail*2),rail+Math.random()*(H-rail*2));x.lineTo(rail+Math.random()*(W-rail*2),rail+Math.random()*(H-rail*2));x.stroke()}
+ x.strokeStyle="#6b5040";x.lineWidth=2;
+ for(let p of pockets){x.beginPath();x.arc(p.x,p.y,28,0,Math.PI*2);let sg=x.createRadialGradient(p.x,p.y,5,p.x,p.y,28);sg.addColorStop(0,"#000");sg.addColorStop(1,"#050505");x.fillStyle=sg;x.fill();x.stroke();
+ x.beginPath();x.arc(p.x,p.y,4,0,Math.PI*2);x.fillStyle="#1a1a1a";x.fill()}
+ let glowGrad=x.createRadialGradient(450,250,10,450,250,200);glowGrad.addColorStop(0,"rgba(255,255,255,.01)");glowGrad.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=glowGrad;x.fillRect(0,0,W,H);
+ drawGhostTrails();
+ for(let b of balls)if(b.active){
+ x.beginPath();x.arc(b.x+2,b.y+3,R+1,0,7);x.fillStyle="rgba(0,0,0,.4)";x.fill();
+ let ballGrad=x.createRadialGradient(b.x-R*.3,b.y-R*.3,R*.1,b.x,b.y,R);
+ ballGrad.addColorStop(0,"rgba(255,255,255,.4)");ballGrad.addColorStop(0.3,b.c);ballGrad.addColorStop(1,darkenColor(b.c));
+ x.beginPath();x.arc(b.x,b.y,R,0,7);x.fillStyle=ballGrad;x.fill();
+ x.strokeStyle="rgba(0,0,0,.5)";x.lineWidth=1;x.stroke();
+ if(b.num){x.beginPath();x.arc(b.x,b.y,5,0,7);x.fillStyle="rgba(255,255,255,.9)";x.fill();x.fillStyle="#111";x.font="bold 6px Arial";x.textAlign="center";x.textBaseline="middle";x.fillText(b.num,b.x,b.y)}
+ }
+ if(aim&&!ballInHand){let q=balls[0],dx=q.x-mouse.x,dy=q.y-mouse.y,d=Math.hypot(dx,dy);if(d){let nx=dx/d,ny=dy/d,pwr=Math.min(d,180)/180;x.setLineDash([7,6]);x.strokeStyle="rgba(255,255,255,.7)";x.lineWidth=2;x.beginPath();x.moveTo(q.x,q.y);x.lineTo(q.x+nx*240,q.y+ny*240);x.stroke();x.setLineDash([]);
+ x.fillStyle=`rgba(255,211,77,${pwr*.5})`;x.beginPath();x.arc(q.x,q.y,8+pwr*15,0,Math.PI*2);x.fill();
+ x.strokeStyle="#c49a3c";x.lineWidth=3;x.beginPath();x.moveTo(q.x-nx*35,q.y-ny*35);x.lineTo(q.x-nx*180,q.y-ny*180);x.stroke();
+ x.fillStyle="#a07020";let ang=Math.atan2(ny,nx);x.beginPath();x.moveTo(q.x-nx*35,q.y-ny*35);x.lineTo(q.x-nx*(35+12*Math.cos(ang+.5)),q.y-ny*(35+12*Math.sin(ang+.5)));x.lineTo(q.x-nx*(35+12*Math.cos(ang-.5)),q.y-ny*(35+12*Math.sin(ang-.5)));x.fill()}}
+ if(ballInHand){let q=balls[0];x.beginPath();x.arc(q.x,q.y,20,0,7);x.strokeStyle="#ffd34d";x.lineWidth=3;x.stroke();
+ let pulse=Math.sin(Date.now()*.005)*2;x.beginPath();x.arc(q.x,q.y,22+pulse,0,7);x.strokeStyle="rgba(255,211,77,.3)";x.lineWidth=1;x.stroke()}
+ drawParticles();updateParticles();addGhostTrail();updateGhostTrails();updatePower();
+}
+function darkenColor(hex){if(!hex||hex.length<7)return"rgb(80,60,40)";let r=parseInt(hex.slice(1,3),16)||0,g=parseInt(hex.slice(3,5),16)||0,b=parseInt(hex.slice(5,7),16)||0;return`rgb(${Math.floor(r*.6)},${Math.floor(g*.6)},${Math.floor(b*.6)})`}
+function loop(){if(gameOver)return;physics(.016);draw();raf=requestAnimationFrame(loop)}
+
+function saveHighScore(p,s){let hs=JSON.parse(localStorage.getItem("waseemPoolScores")||"[]");hs.push({player:p,score:s,mode:gameMode,date:new Date().toLocaleDateString()});hs.sort((a,b)=>b.score-a.score);localStorage.setItem("waseemPoolScores",JSON.stringify(hs.slice(0,10)))}
+function showHighScores(){let hs=JSON.parse(localStorage.getItem("waseemPoolScores")||"[]");let html="<div class='hs-title'>🏆 High Scores</div>";if(!hs.length)html+="<div>No scores yet! Be the first!</div>";hs.forEach((h,i)=>html+=`<div>#${i+1} P${h.player} — ${h.score} (${h.mode}) [${h.date}]</div>`);return html}
+
+function showOverlay(){document.getElementById("overlay").classList.add("show");document.getElementById("highscoresWin").innerHTML=showHighScores()}
+function hideOverlay(){document.getElementById("overlay").classList.remove("show");document.getElementById("overlay").querySelector('.win').innerHTML='<h2 id="winner"></h2><p id="final"></p><div id="finalScores" style="margin:10px 0"></div><div class="highscores" id="highscoresWin"></div><button id="rematch">🔄 Rematch</button><button id="home" class="secondary" style="margin-top:6px">🏠 Home</button>';document.getElementById("highscoresWin").innerHTML=showHighScores()}
+document.getElementById("rematch").addEventListener("click",()=>{document.getElementById("overlay").classList.remove("show");reset()});
+document.getElementById("home").addEventListener("click",hideOverlay);
+document.getElementById("restart").onclick=reset;
+document.getElementById("table").addEventListener("click",()=>initAudio());
+
+window.addEventListener("resize",resizeCanvas);
+timerEnabled=true;
+reset();
+</script>
+</body>
+</html>
