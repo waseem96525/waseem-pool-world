@@ -43,6 +43,8 @@
   .nav-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
   .nav-btn.active{border-color:var(--gold);color:var(--gold);
     background:rgba(255,211,77,.1);box-shadow:0 0 12px rgba(255,211,77,.15)}
+  .nav-btn.fullview-active{border-color:var(--gold);color:var(--gold);
+    background:rgba(255,211,77,.15)}
   .nav-btn .ico{font-size:1.1em}
 
   .toolbar{display:flex;gap:6px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
@@ -352,6 +354,204 @@
   .help-content kbd{background:rgba(255,211,77,.15);color:var(--gold);
     padding:1px 6px;border-radius:4px;font-size:11px;font-family:monospace}
 
+  /* ============================================
+     FULL VIEW MODE
+     ============================================ */
+  body.fullview {
+    padding: 0;
+    overflow: hidden;
+  }
+  body.fullview .game {
+    max-width: 100%;
+    padding: 0;
+  }
+  body.fullview h1,
+  body.fullview .topNav,
+  body.fullview .toolbar,
+  body.fullview .panel,
+  body.fullview .sessionStats {
+    display: none !important;
+  }
+  body.fullview .layout {
+    display: block;
+    gap: 0;
+  }
+  body.fullview .tableWrap {
+    position: fixed;
+    inset: 0;
+    padding: 0;
+    border-radius: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
+  body.fullview canvas {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto !important;
+    height: auto !important;
+    border-radius: 0;
+  }
+
+  /* Floating controls in full view */
+  .fullviewControls {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    z-index: 50;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    pointer-events: none;
+  }
+  .fullviewControls > * {
+    pointer-events: auto;
+  }
+  body.fullview .fullviewControls {
+    display: flex;
+  }
+  .fullviewControls .fv-power {
+    flex: 1;
+    min-width: 200px;
+    height: 14px;
+    background: rgba(10,18,26,.9);
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid #2a3545;
+    position: relative;
+  }
+  .fullviewControls .fv-power-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#2ecc71,#f1c40f,#e74c3c);
+    border-radius: 7px;
+    transition: width .04s;
+  }
+  .fullviewControls .fv-power-text {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffd34d;
+    min-width: 70px;
+    text-align: center;
+  }
+  .fullviewControls .fv-spin {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10,18,26,.85);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #2a3545;
+  }
+  .fullviewControls .fv-spin label {
+    font-size: 11px;
+    color: #8a99a8;
+    font-weight: 700;
+  }
+  .fullviewControls .fv-spin input[type=range] {
+    width: 80px;
+    accent-color: #ffd34d;
+  }
+  .fullviewControls .fv-btn {
+    background: rgba(10,18,26,.9);
+    border: 1px solid #2a3545;
+    color: #ffd34d;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0;
+    box-shadow: none;
+  }
+  .fullviewControls .fv-btn:hover {
+    background: rgba(255,211,77,.15);
+    border-color: #ffd34d;
+    transform: none;
+  }
+
+  /* Exit full view button */
+  .exitFullview {
+    display: none;
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(10,18,26,.9);
+    border: 1px solid #ffd34d;
+    color: #ffd34d;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    z-index: 60;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+    box-shadow: 0 4px 16px rgba(0,0,0,.6);
+  }
+  .exitFullview:hover {
+    background: rgba(255,211,77,.2);
+    transform: scale(1.1);
+  }
+  body.fullview .exitFullview {
+    display: flex;
+  }
+
+  /* Compact HUD in fullview */
+  .fullviewHUD {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(10,18,26,.85);
+    border: 1px solid #2a3545;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #b0bec5;
+    z-index: 55;
+    backdrop-filter: blur(8px);
+    gap: 12px;
+    align-items: center;
+  }
+  body.fullview .fullviewHUD {
+    display: flex;
+  }
+  .fullviewHUD .fv-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .fullviewHUD .fv-stat b {
+    color: #ffd34d;
+    font-weight: 800;
+  }
+  .fullviewHUD .fv-turn {
+    background: rgba(255,211,77,.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #ffd34d;
+    font-weight: 700;
+  }
+
   @media(max-width:1000px){
     .layout{grid-template-columns:1fr}
     .panel{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:none}
@@ -379,6 +579,9 @@
     .bracketHUD,.sessionStats{font-size:9px;padding:4px 6px}
     .sessionStats{gap:6px}
     .cue-grid{grid-template-columns:1fr}
+    .fullviewControls{padding:8px 10px;gap:6px}
+    .fullviewControls .fv-spin input[type=range]{width:60px}
+    .fullviewControls .fv-btn{padding:6px 10px;font-size:11px;min-height:32px}
   }
   @media(max-width:400px){
     .tool-btn .label-text{display:none}
@@ -403,6 +606,7 @@
     <button class="nav-btn" id="navPuzzles"><span class="ico">🎯</span><span class="label-text">Puzzles</span></button>
     <button class="nav-btn" id="navCues"><span class="ico">🎱</span><span class="label-text">Cues</span></button>
     <button class="nav-btn" id="navAch"><span class="ico">🏅</span><span class="label-text">Awards</span></button>
+    <button class="nav-btn" id="navFullview"><span class="ico">⛶</span><span class="label-text">Full View</span></button>
   </div>
 
   <div class="toolbar">
@@ -587,6 +791,7 @@
         <li><b>Tap a pocket</b> to call it (when on 8-ball).</li>
         <li><kbd>Ctrl+Z</kbd> Undo · <kbd>R</kbd> Replay · <kbd>T</kbd> Theme</li>
         <li><kbd>A</kbd> Aim Assist · <kbd>H</kbd> Help</li>
+        <li><kbd>F</kbd> Toggle Full View Mode</li>
       </ul>
       <h3>🏆 Game Modes</h3>
       <ul>
@@ -599,6 +804,12 @@
         <li>Short pull-back = gentle tap shot</li>
         <li>Long pull-back = powerful break shot</li>
         <li>The power bar turns <b>red</b> at max power</li>
+      </ul>
+      <h3>⛶ Full View</h3>
+      <ul>
+        <li>Hides all panels for immersive play.</li>
+        <li>Toggle with the ⛶ button or <kbd>F</kbd> key.</li>
+        <li>Floating controls at the bottom.</li>
       </ul>
     </div>
     <button onclick="document.getElementById('helpOverlay').classList.remove('show')" style="margin-top:16px">Got it!</button>
@@ -616,9 +827,34 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Full View Mode Controls -->
+<div class="fullviewControls" id="fullviewControls">
+  <div class="fv-power">
+    <div class="fv-power-bar" id="fvPowerBar"></div>
+  </div>
+  <div class="fv-power-text" id="fvPowerText">⚡ 0%</div>
+  <div class="fv-spin">
+    <label>⚙️</label>
+    <input type="range" id="fvSpin" min="-1" max="1" step=".01" value="0">
+  </div>
+  <button class="fv-btn" id="fvUndo">↩</button>
+  <button class="fv-btn" id="fvReplay">🎬</button>
+  <button class="fv-btn" id="fvNew">🔄</button>
+</div>
+
+<!-- Full View Exit Button -->
+<button class="exitFullview" id="exitFullview" title="Exit Full View (F)">✕</button>
+
+<!-- Full View Compact HUD -->
+<div class="fullviewHUD" id="fullviewHUD">
+  <div class="fv-stat">🎯 <b id="fvShots">0</b></div>
+  <div class="fv-stat">✅ <b id="fvPots">0</b></div>
+  <div class="fv-turn" id="fvTurn">P1</div>
+</div>
+
 <script>
 /* =========================================================
-   WASEEM POOL WORLD · ULTIMATE EDITION (Fixed Aiming)
+   WASEEM POOL WORLD · ULTIMATE EDITION
    ========================================================= */
 
 const c = document.getElementById("table");
@@ -640,14 +876,12 @@ const colors = [
   "#326bd3", "#d9483f", "#7544bd", "#e59a25", "#258e61", "#9e3434"
 ];
 
-// ============================================================
 // FIXED PHYSICS CONSTANTS
-// ============================================================
-const MAX_DRAG = 350;          // ↑ was 180 — allows much further pull-back
-const MIN_DRAG = 8;            // minimum drag before shot registers
-const FULL_POWER_DRAG = 300;   // drag distance for 100% power
-const POWER_SCALE = 0.075;     // ↑ was 0.045 — more punch per pixel
-const MAX_POWER = 22;          // maximum initial velocity
+const MAX_DRAG = 350;
+const MIN_DRAG = 8;
+const FULL_POWER_DRAG = 300;
+const POWER_SCALE = 0.075;
+const MAX_POWER = 22;
 
 const FRICTION = 0.976;
 const SPIN_DECAY = 0.96;
@@ -812,7 +1046,7 @@ let scores = [0, 0];
 let fouls = [0, 0];
 let aim = false;
 let mouse = {x:0, y:0};
-let aimStart = {x:0, y:0};   // Where the drag started (usually near cue ball)
+let aimStart = {x:0, y:0};
 let gameOver = false;
 let ballInHand = false;
 let simulating = false;
@@ -866,11 +1100,11 @@ let replaySpeed = 1;
 let replayRaf = null;
 const MAX_REPLAY_FRAMES = 600;
 
+let fullViewActive = false;
+
 let sessionStats = {totalShots:0, totalPots:0, longestCombo:0, winStreak:0, coinsEarned:0, themesUsed:[]};
 
-// ============================================================
 // PERSISTENCE
-// ============================================================
 function loadAll() {
   try {
     let s = JSON.parse(localStorage.getItem("waseemUltimate")||"null");
@@ -962,9 +1196,6 @@ const playAchSound = () => {
   setTimeout(()=>playSound(1320,.2,"triangle",.15),200);
 };
 
-// ============================================================
-// ACHIEVEMENTS
-// ============================================================
 function unlockAchievement(id) {
   let ach = ACHIEVEMENTS.find(a => a.id === id);
   if (!ach || ach.unlocked) return;
@@ -997,7 +1228,6 @@ function renderAchievements() {
     </div>
   `).join('');
 }
-
 function renderCues() {
   let grid = document.getElementById("cueGrid");
   document.getElementById("coinBalance").textContent = coinBalance;
@@ -1043,7 +1273,6 @@ function renderCues() {
     };
   });
 }
-
 function renderPuzzles() {
   let grid = document.getElementById("puzzleGrid");
   grid.innerHTML = PUZZLES.map((p, i) => {
@@ -1083,9 +1312,7 @@ function startPuzzle(id) {
   showToast(`🎯 Puzzle: ${puzzle.name}`, "gold");
 }
 
-// ============================================================
 // TOURNAMENT
-// ============================================================
 function generateTournamentBracket() {
   let aiNames = ["Alex", "Jordan", "Sam", "Riley", "Casey", "Morgan", "Taylor", "Quinn"];
   let aiDiffs = ["easy", "medium", "medium", "hard", "hard", "pro", "pro", "pro"];
@@ -1217,9 +1444,7 @@ function openTournament() {
   document.getElementById("tournamentOverlay").classList.add("show");
 }
 
-// ============================================================
 // UI HELPERS
-// ============================================================
 const spinEl = document.getElementById("spin");
 const msg = document.getElementById("message");
 const overlay = document.getElementById("overlay");
@@ -1234,6 +1459,10 @@ function showToast(text, type="") {
   toastTimer = setTimeout(() => toast.className = "toast", 2200);
 }
 function resizeCanvas() {
+  if (fullViewActive) {
+    resizeCanvasFullView();
+    return;
+  }
   let wrap = c.parentElement;
   let w = wrap.clientWidth - (window.innerWidth < 640 ? 12 : 24);
   let ratio = W / H;
@@ -1242,7 +1471,25 @@ function resizeCanvas() {
   if (h < 180) h = 180;
   w = h * ratio;
   c.width = W; c.height = H;
-  c.style.width = w + "px"; c.style.height = h + "px";
+  c.style.width = w + "px";
+  c.style.height = h + "px";
+}
+function resizeCanvasFullView() {
+  let vw = window.innerWidth;
+  let vh = window.innerHeight;
+  let ratio = W / H;
+  let w, h;
+  if (vw / vh > ratio) {
+    h = vh;
+    w = h * ratio;
+  } else {
+    w = vw;
+    h = w / ratio;
+  }
+  c.width = W;
+  c.height = H;
+  c.style.width = w + "px";
+  c.style.height = h + "px";
 }
 function update() {
   document.getElementById("p1").textContent = scores[0];
@@ -1265,11 +1512,24 @@ function update() {
   document.getElementById("statStreak").textContent = "🔥 " + sessionStats.winStreak;
   document.getElementById("winStreak").textContent = sessionStats.winStreak;
   document.getElementById("cueName").textContent = getCue().name;
+  updateFullViewHUD();
   if (ballInHand && !gameOver && !simulating) {
     let hint = ballInHandKitchen
       ? `🖐️ <span class="ball-in-hand-indicator">BALL IN HAND</span> — place behind head string.`
       : `🖐️ <span class="ball-in-hand-indicator">BALL IN HAND</span> — tap anywhere to place cue ball.`;
     setMessage(hint, false);
+  }
+}
+function updateFullViewHUD() {
+  let shots = document.getElementById("fvShots");
+  let pots = document.getElementById("fvPots");
+  let turnEl = document.getElementById("fvTurn");
+  if (shots) shots.textContent = shotCount;
+  if (pots) pots.textContent = sessionStats.totalPots;
+  if (turnEl) {
+    turnEl.textContent = "P" + (turn + 1);
+    turnEl.style.background = turn === 0 ? "rgba(255,211,77,.15)" : "rgba(68,170,255,.15)";
+    turnEl.style.color = turn === 0 ? "#ffd34d" : "#44aaff";
   }
 }
 function setMessage(text, flash=true, type="") {
@@ -1299,6 +1559,49 @@ function groupOf(num) {
   if (num >= 9 && num <= 15) return "stripes";
   if (num === 8) return "eight";
   return "cue";
+}
+
+// FULL VIEW MODE
+function enterFullView() {
+  fullViewActive = true;
+  document.body.classList.add("fullview");
+  document.getElementById("navFullview").classList.add("fullview-active");
+  document.getElementById("fvSpin").value = spinEl.value;
+
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else if (document.documentElement.webkitRequestFullscreen) {
+    document.documentElement.webkitRequestFullscreen();
+  }
+
+  setTimeout(() => {
+    resizeCanvasFullView();
+    draw();
+  }, 100);
+
+  showToast("⛶ Full View Mode", "gold");
+}
+function exitFullView() {
+  fullViewActive = false;
+  document.body.classList.remove("fullview");
+  document.getElementById("navFullview").classList.remove("fullview-active");
+
+  if (document.exitFullscreen && document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  } else if (document.webkitExitFullscreen && document.webkitFullscreenElement) {
+    document.webkitExitFullscreen();
+  }
+
+  setTimeout(() => {
+    resizeCanvas();
+    draw();
+  }, 100);
+
+  showToast("Exited Full View", "gold");
+}
+function toggleFullView() {
+  if (fullViewActive) exitFullView();
+  else enterFullView();
 }
 
 function reset() {
@@ -1357,9 +1660,6 @@ function updateHistory() {
   el.innerHTML = html;
 }
 
-// ============================================================
-// SHOT LIFECYCLE
-// ============================================================
 function shotStart() {
   setMessage(`🎯 Player ${turn+1} shooting...`);
   resetShotEvents();
@@ -1610,9 +1910,6 @@ function switchTurn() {
   update();
 }
 
-// ============================================================
-// PHYSICS
-// ============================================================
 function physics(dt) {
   let active = balls.filter(b => b.active);
   for (let b of active) {
@@ -1694,9 +1991,7 @@ function physics(dt) {
   }
 }
 
-// ============================================================
 // AIM ASSIST
-// ============================================================
 function raycastToFirstBall(x0, y0, dx, dy, ignoreBall) {
   let cx = x0, cy = y0;
   for (let s = 0; s < AIM_RAY_STEPS; s++) {
@@ -1817,11 +2112,6 @@ function drawAimAssist() {
   }
 }
 
-/**
- * Draw the cue stick pulling back based on drag distance.
- * IMPORTANT: The stick pulls back FURTHER as the player drags.
- * Distance = how far the mouse is from the cue ball.
- */
 function drawCueStick() {
   if (!aim || ballInHand || gameOver || simulating || replayActive) return;
   let q = balls[0];
@@ -1830,27 +2120,21 @@ function drawCueStick() {
   if (d < 4) return;
   let nx = dx/d, ny = dy/d;
 
-  // Map drag distance to pull-back distance
-  // Full pull = stick is dragged back FULL_PULL distance
-  let normalizedPull = Math.min(d / FULL_POWER_DRAG, 1);  // 0 to 1
-  let baseOffset = 30;                                       // minimum stick offset
-  let maxPullBack = 160;                                     // max extra pull
+  let normalizedPull = Math.min(d / FULL_POWER_DRAG, 1);
+  let baseOffset = 30;
+  let maxPullBack = 160;
   let pullBack = baseOffset + normalizedPull * maxPullBack;
 
-  // Stick length
   let stickLen = 200;
-  let cx1 = q.x - nx * pullBack;                 // tip end (near cue ball)
+  let cx1 = q.x - nx * pullBack;
   let cy1 = q.y - ny * pullBack;
-  let cx2 = q.x - nx * (pullBack + stickLen);    // butt end (far)
+  let cx2 = q.x - nx * (pullBack + stickLen);
   let cy2 = q.y - ny * (pullBack + stickLen);
 
-  // Shadow
   x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 8;
   x.beginPath(); x.moveTo(cx1+2, cy1+2); x.lineTo(cx2+2, cy2+2); x.stroke();
 
-  // Body gradient (color changes with power)
   let cueGrad = x.createLinearGradient(cx1, cy1, cx2, cy2);
-  let cue = getCue();
   if (normalizedPull > 0.75) {
     cueGrad.addColorStop(0, "#ff3030");
     cueGrad.addColorStop(.15, "#c04040");
@@ -1870,26 +2154,20 @@ function drawCueStick() {
   x.strokeStyle = cueGrad; x.lineWidth = 6;
   x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx2, cy2); x.stroke();
 
-  // Highlight
   x.strokeStyle = "rgba(255,255,255,.25)"; x.lineWidth = 1.5;
   x.beginPath();
   x.moveTo(cx1 - ny*1.5, cy1 + nx*1.5);
   x.lineTo(cx2 - ny*1.5, cy2 + nx*1.5);
   x.stroke();
 
-  // White tip
   x.strokeStyle = "#f0f0f0"; x.lineWidth = 6;
   x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx*8, cy1 - ny*8); x.stroke();
 
-  // Draw pull-back guide line
   x.save();
   x.setLineDash([3, 5]);
   x.strokeStyle = "rgba(255,255,255,.3)";
   x.lineWidth = 1;
-  x.beginPath();
-  x.moveTo(q.x, q.y);
-  x.lineTo(cx1, cy1);
-  x.stroke();
+  x.beginPath(); x.moveTo(q.x, q.y); x.lineTo(cx1, cy1); x.stroke();
   x.restore();
 }
 
@@ -2004,9 +2282,7 @@ document.getElementById("rplySpeed").onclick = (e) => {
 document.getElementById("rplyClose").onclick = closeReplay;
 document.getElementById("replayBtn").onclick = openReplay;
 
-// ============================================================
 // PARTICLES
-// ============================================================
 function addPocketParticles() {
   for (let i = 0; i < 18; i++) {
     let p = pockets[Math.floor(Math.random()*pockets.length)];
@@ -2077,34 +2353,40 @@ function drawGhostTrails() {
   }
   x.globalAlpha = 1;
 }
-
-/**
- * FIXED: Power meter now uses FULL_POWER_DRAG for 100%.
- * The bar fills up smoothly based on actual drag distance.
- */
 function updatePower() {
   if (aim && !ballInHand) {
     let q = balls[0];
     let d = Math.hypot(q.x - mouse.x, q.y - mouse.y);
     currentDragDistance = d;
-    // Use FULL_POWER_DRAG for 100% power
     powerLevel = Math.min(d / FULL_POWER_DRAG * 100, 100);
     document.getElementById("powerBar").style.width = powerLevel + "%";
     let textEl = document.getElementById("powerText");
     textEl.textContent = `⚡ Power: ${Math.round(powerLevel)}%`;
     textEl.classList.toggle("max", powerLevel >= 98);
+    // Mirror to fullview
+    let fvBar = document.getElementById("fvPowerBar");
+    let fvText = document.getElementById("fvPowerText");
+    if (fvBar && fvText) {
+      fvBar.style.width = powerLevel + "%";
+      fvText.textContent = `⚡ ${Math.round(powerLevel)}%`;
+      fvText.style.color = powerLevel >= 98 ? "#e74c3c" : "#ffd34d";
+    }
   } else {
     powerLevel = 0;
     currentDragDistance = 0;
     document.getElementById("powerBar").style.width = "0%";
     document.getElementById("powerText").textContent = "⚡ Power: 0%";
     document.getElementById("powerText").classList.remove("max");
+    let fvBar = document.getElementById("fvPowerBar");
+    let fvText = document.getElementById("fvPowerText");
+    if (fvBar && fvText) {
+      fvBar.style.width = "0%";
+      fvText.textContent = "⚡ 0%";
+      fvText.style.color = "#ffd34d";
+    }
   }
 }
 
-// ============================================================
-// DRAW
-// ============================================================
 function draw() {
   if (replayActive) { drawReplay(); return; }
   x.clearRect(0,0,W,H);
@@ -2220,7 +2502,7 @@ function draw() {
     }
   }
   if (aimAssist) drawAimAssist();
-  drawCueStick();   // Always draw cue stick (fixed)
+  drawCueStick();
   if (ballInHand && !gameOver && !simulating) {
     let q = balls[0];
     let pulse = Math.sin(Date.now()*.006)*3;
@@ -2255,9 +2537,7 @@ function loop() {
   raf = requestAnimationFrame(loop);
 }
 
-// ============================================================
-// INPUT — FIXED AIMING & POWER
-// ============================================================
+// INPUT
 function handleDown(p) {
   if (replayActive || gameOver || aiThinking || simulating) return;
   let cue = balls[0];
@@ -2279,7 +2559,6 @@ function handleDown(p) {
     update();
     return;
   }
-  // Check pocket click for called pocket
   if (onEightBall(turn) && callPocketEnabled && currentContext !== "puzzle") {
     for (let pi = 0; pi < pockets.length; pi++) {
       let pk = pockets[pi];
@@ -2291,16 +2570,11 @@ function handleDown(p) {
       }
     }
   }
-  // Start aiming — record start position
   aim = true;
   aimStart = {x: p.x, y: p.y};
   mouse = p;
 }
-
-function handleMove(p) {
-  mouse = p;
-}
-
+function handleMove(p) { mouse = p; }
 function handleUp(p) {
   if (replayActive) return;
   if (ballInHand && !gameOver && !aiThinking && !simulating) return;
@@ -2311,28 +2585,19 @@ function handleUp(p) {
   let dx = q.x - p.x, dy = q.y - p.y;
   let d = Math.hypot(dx, dy);
 
-  // Minimum drag threshold
   if (d < MIN_DRAG) {
     updatePower();
     return;
   }
-
-  // If on 8-ball and pocket not called
   if (onEightBall(turn) && callPocketEnabled && calledPocket === null && currentContext !== "puzzle") {
     showToast("📍 Tap a pocket to call it first!", "red");
     updatePower();
     return;
   }
 
-  // ============================================================
-  // FIXED POWER CALCULATION
-  // ============================================================
-  // Use FULL_POWER_DRAG for 100%. Drag further = capped at 100%.
-  let normalizedPower = Math.min(d / FULL_POWER_DRAG, 1);  // 0.0 to 1.0
+  let normalizedPower = Math.min(d / FULL_POWER_DRAG, 1);
   let cue = getCue();
-  let power = normalizedPower * MAX_POWER * cue.powerMult;  // absolute velocity
-
-  // Clamp to max
+  let power = normalizedPower * MAX_POWER * cue.powerMult;
   if (power > MAX_POWER * 1.4) power = MAX_POWER * 1.4;
 
   let nx = dx/d, ny = dy/d;
@@ -2340,7 +2605,6 @@ function handleUp(p) {
   q.vy = ny * power;
   q.spin = +spinEl.value * power * 0.4 * cue.spinMult;
 
-  // Show power used
   let pct = Math.round(normalizedPower * 100);
   setMessage(`⚡ Shot fired at ${pct}% power!`);
 
@@ -2372,9 +2636,7 @@ c.addEventListener("touchend", e => {
   if (e.changedTouches.length > 0) handleUp(pos(e.changedTouches[0]));
 }, {passive:false});
 
-// ============================================================
 // STATE SAVE/UNDO
-// ============================================================
 function saveState() {
   undoStack.push({
     balls: balls.map(b => ({...b})),
@@ -2400,9 +2662,7 @@ function undo() {
   showToast("↩ Undone", "gold");
 }
 
-// ============================================================
 // AI
-// ============================================================
 function aiThink() {
   aiThinking = true;
   setMessage(`🤖 ${AI_LEVELS[currentDifficulty].name} AI is thinking...`);
@@ -2454,9 +2714,7 @@ function aiShot() {
   update();
 }
 
-// ============================================================
 // HIGH SCORES
-// ============================================================
 function saveHighScore(p, s) {
   try {
     let hs = JSON.parse(localStorage.getItem("waseemPoolScores")||"[]");
@@ -2552,9 +2810,7 @@ function setDifficulty(d) {
   if (mode === "ai" && !simulating && !gameOver && turn === 1) aiThink();
 }
 
-// ============================================================
 // NAVIGATION & EVENTS
-// ============================================================
 document.getElementById("navQuick").onclick = () => {
   currentContext = "quick";
   document.getElementById("navQuick").classList.add("active");
@@ -2580,6 +2836,34 @@ document.getElementById("navAch").onclick = () => {
   renderAchievements();
   document.getElementById("achOverlay").classList.add("show");
 };
+document.getElementById("navFullview").onclick = toggleFullView;
+document.getElementById("exitFullview").onclick = exitFullView;
+
+// Full view control buttons
+document.getElementById("fvUndo").onclick = () => undo();
+document.getElementById("fvReplay").onclick = () => openReplay();
+document.getElementById("fvNew").onclick = () => { reset(); showToast("🔄 New game", "gold"); };
+
+document.getElementById("fvSpin").addEventListener("input", (e) => {
+  spinEl.value = e.target.value;
+  let spinVal = +e.target.value;
+  document.getElementById("spinText").textContent =
+    spinVal > .05 ? "Topspin ⚡" : spinVal < -.05 ? "Backspin ⚡" : "Center ⚙️";
+});
+spinEl.addEventListener("input", (e) => {
+  document.getElementById("fvSpin").value = e.target.value;
+});
+
+// Handle browser fullscreen exit
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement && fullViewActive) {
+    fullViewActive = false;
+    document.body.classList.remove("fullview");
+    document.getElementById("navFullview").classList.remove("fullview-active");
+    setTimeout(() => { resizeCanvas(); draw(); }, 100);
+  }
+});
+
 document.getElementById("modeVs").onclick = () => setMode("vs");
 document.getElementById("modeAi").onclick = () => setMode("ai");
 document.getElementById("diffEasy").onclick = () => setDifficulty("easy");
@@ -2617,18 +2901,21 @@ window.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     document.querySelectorAll(".overlay").forEach(o => o.classList.remove("show"));
     if (replayActive) closeReplay();
+    if (fullViewActive) exitFullView();
   }
   if (e.key === "h" || e.key === "?") document.getElementById("helpOverlay").classList.add("show");
   if (e.key === "t") cycleTheme();
   if (e.key === "m") toggleSound();
   if (e.key === "a") toggleAimAssist();
   if (e.key === "c") toggleCallPocket();
+  if (e.key === "f" && !e.ctrlKey && !e.metaKey && !e.target.matches("input")) {
+    e.preventDefault();
+    toggleFullView();
+  }
   if (e.key === " " && replayActive) { e.preventDefault(); document.getElementById("rplyPlay").click(); }
 });
 
-// ============================================================
 // PWA
-// ============================================================
 function initPWA() {
   let manifest = {
     name: "Waseem Pool World", short_name: "Pool World",
@@ -2641,8 +2928,7 @@ function initPWA() {
     }]
   };
   let blob = new Blob([JSON.stringify(manifest)], {type: "application/manifest+json"});
-  let url = URL.createObjectURL(blob);
-  document.getElementById("manifest-link").href = url;
+  document.getElementById("manifest-link").href = URL.createObjectURL(blob);
   if ("serviceWorker" in navigator) {
     let swCode = `
       const CACHE = 'pool-v1';
