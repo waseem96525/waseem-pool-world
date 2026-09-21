@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
     <meta name="theme-color" content="#0a0e14">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" id="manifest-link">
-    <title>Waseem Pool World · Realistic</title>
+    <title>Waseem Pool World · Ultimate</title>
     <style>
         * {
             box-sizing: border-box;
@@ -109,7 +108,8 @@
             align-items: center;
             gap: 5px;
             min-height: 34px;
-            white-space: nowrap
+            white-space: nowrap;
+            position: relative
         }
 
         .nav-btn:hover {
@@ -125,10 +125,18 @@
             box-shadow: 0 0 12px rgba(255, 211, 77, .15)
         }
 
-        .nav-btn.fullview-active {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(255, 211, 77, .15)
+        .nav-coins-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #ffd34d, #f1c40f);
+            color: #1a1a1a;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+            border: 1.5px solid #1a1a1a
         }
 
         .toolbar {
@@ -190,18 +198,15 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .05);
             position: relative;
-            overflow: hidden;
-            transition: transform .1s
+            overflow: hidden
         }
 
         .tableWrap.theme-neon {
-            background: linear-gradient(135deg, #0a2a3a, #041520);
-            box-shadow: 0 0 40px rgba(0, 200, 255, .15), var(--shadow)
+            background: linear-gradient(135deg, #0a2a3a, #041520)
         }
 
         .tableWrap.theme-royal {
-            background: linear-gradient(135deg, #3a1a4a, #1a0825);
-            box-shadow: 0 0 40px rgba(180, 0, 255, .15), var(--shadow)
+            background: linear-gradient(135deg, #3a1a4a, #1a0825)
         }
 
         .tableWrap.theme-classic {
@@ -209,8 +214,7 @@
         }
 
         .tableWrap.theme-crimson {
-            background: linear-gradient(135deg, #4a1010, #2a0505);
-            box-shadow: 0 0 40px rgba(255, 100, 100, .15), var(--shadow)
+            background: linear-gradient(135deg, #4a1010, #2a0505)
         }
 
         canvas {
@@ -323,16 +327,6 @@
         .score-card.active {
             border-color: var(--gold);
             box-shadow: 0 0 16px rgba(255, 211, 77, .2)
-        }
-
-        .score-card.active::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent)
         }
 
         .score-card .label {
@@ -569,8 +563,7 @@
 
         button:hover {
             transform: translateY(-2px);
-            filter: brightness(1.1);
-            box-shadow: 0 4px 16px rgba(230, 184, 63, .3)
+            filter: brightness(1.1)
         }
 
         button.secondary {
@@ -691,7 +684,7 @@
             border-radius: 20px;
             padding: clamp(20px, 4vw, 28px);
             text-align: center;
-            width: min(500px, 94%);
+            width: min(560px, 94%);
             box-shadow: 0 0 60px rgba(255, 211, 77, .15), 0 20px 60px rgba(0, 0, 0, .5);
             animation: slideUp .4s ease;
             max-height: 92vh;
@@ -819,59 +812,163 @@
             font-weight: 700
         }
 
+        .coin-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(255, 211, 77, .15), rgba(255, 211, 77, .05));
+            border: 1px solid rgba(255, 211, 77, .4);
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin: 8px 0;
+            font-size: 16px;
+            font-weight: 800
+        }
+
+        .coin-header .coin-icon {
+            font-size: 20px
+        }
+
+        .coin-header b {
+            color: var(--gold);
+            font-size: 22px
+        }
+
+        .coin-header small {
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 4px
+        }
+
         .cue-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 10px 0
+            gap: 10px;
+            margin: 12px 0;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 4px
         }
 
         .cue-card {
-            background: rgba(0, 0, 0, .4);
+            background: linear-gradient(145deg, rgba(0, 0, 0, .5), rgba(20, 28, 38, .5));
             border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             cursor: pointer;
             transition: all .25s;
-            text-align: center
+            text-align: center;
+            position: relative;
+            overflow: hidden
         }
 
         .cue-card:hover {
             border-color: var(--gold);
-            transform: translateY(-2px)
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 211, 77, .2)
         }
 
         .cue-card.selected {
             border-color: var(--gold);
-            background: rgba(255, 211, 77, .1)
+            background: linear-gradient(145deg, rgba(255, 211, 77, .15), rgba(255, 211, 77, .05));
+            box-shadow: 0 0 20px rgba(255, 211, 77, .3)
         }
 
         .cue-card.locked {
-            opacity: .5;
+            opacity: .65;
             cursor: not-allowed
         }
 
+        .cue-card.locked:hover {
+            transform: none;
+            border-color: var(--border)
+        }
+
+        .cue-card .cue-stick-preview {
+            height: 44px;
+            width: 100%;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .cue-card .cue-stick-bar {
+            width: 90%;
+            height: 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .5)
+        }
+
         .cue-card .cue-icon {
-            font-size: 32px;
+            font-size: 22px;
             margin-bottom: 4px
         }
 
         .cue-card .cue-name {
-            font-size: 12px;
-            font-weight: 700
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 2px
         }
 
         .cue-card .cue-desc {
             font-size: 10px;
             color: var(--text-dim);
-            margin-top: 2px
+            margin-top: 2px;
+            line-height: 1.3
         }
 
         .cue-card .cue-price {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--gold);
             font-weight: 800;
-            margin-top: 4px
+            margin-top: 6px;
+            padding: 3px 8px;
+            background: rgba(255, 211, 77, .12);
+            border-radius: 6px;
+            display: inline-block
+        }
+
+        .cue-card .cue-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            letter-spacing: .5px
+        }
+
+        .cue-badge.equipped {
+            background: var(--green);
+            color: #fff
+        }
+
+        .cue-badge.locked {
+            background: rgba(120, 120, 120, .4);
+            color: #aaa
+        }
+
+        .cue-card .cue-stats {
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            display: flex;
+            justify-content: center;
+            gap: 8px
+        }
+
+        .cue-card .cue-stats span {
+            color: var(--green);
+            font-weight: 700
         }
 
         .puzzle-grid {
@@ -925,34 +1022,6 @@
             font-size: 14px;
             color: var(--gold);
             letter-spacing: 2px
-        }
-
-        .puzzle-card .difficulty {
-            font-size: 9px;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 6px;
-            text-transform: uppercase
-        }
-
-        .difficulty.easy {
-            background: rgba(46, 204, 113, .2);
-            color: #2ecc71
-        }
-
-        .difficulty.medium {
-            background: rgba(255, 211, 77, .2);
-            color: #ffd34d
-        }
-
-        .difficulty.hard {
-            background: rgba(231, 76, 60, .2);
-            color: #e74c3c
-        }
-
-        .difficulty.extreme {
-            background: rgba(155, 89, 182, .3);
-            color: #c39bd3
         }
 
         .ach-grid {
@@ -1074,6 +1143,29 @@
             margin-top: 1px
         }
 
+        .coin-float {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffd34d;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, .8);
+            z-index: 500;
+            animation: coinPop 1.2s ease-out forwards
+        }
+
+        @keyframes coinPop {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-80px) scale(1.4);
+                opacity: 0
+            }
+        }
+
         @keyframes pulse {
 
             0%,
@@ -1169,203 +1261,6 @@
             font-family: monospace
         }
 
-        body.fullview {
-            padding: 0;
-            overflow: hidden;
-        }
-
-        body.fullview .game {
-            max-width: 100%;
-            padding: 0;
-        }
-
-        body.fullview h1,
-        body.fullview .topNav,
-        body.fullview .toolbar,
-        body.fullview .panel,
-        body.fullview .sessionStats {
-            display: none !important;
-        }
-
-        body.fullview .layout {
-            display: block;
-        }
-
-        body.fullview .tableWrap {
-            position: fixed;
-            inset: 0;
-            padding: 0;
-            border-radius: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-        }
-
-        body.fullview canvas {
-            max-width: 100vw;
-            max-height: 100vh;
-            width: auto !important;
-            height: auto !important;
-            border-radius: 0;
-        }
-
-        .fullviewControls {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px 16px;
-            background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
-            z-index: 50;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            pointer-events: none;
-        }
-
-        .fullviewControls>* {
-            pointer-events: auto;
-        }
-
-        body.fullview .fullviewControls {
-            display: flex;
-        }
-
-        .fullviewControls .fv-power {
-            flex: 1;
-            min-width: 200px;
-            height: 14px;
-            background: rgba(10, 18, 26, .9);
-            border-radius: 7px;
-            overflow: hidden;
-            border: 1px solid #2a3545;
-            position: relative;
-        }
-
-        .fullviewControls .fv-power-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c);
-            border-radius: 7px;
-            transition: width .04s;
-        }
-
-        .fullviewControls .fv-power-text {
-            font-size: 11px;
-            font-weight: 800;
-            color: #ffd34d;
-            min-width: 70px;
-            text-align: center;
-        }
-
-        .fullviewControls .fv-spin {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(10, 18, 26, .85);
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid #2a3545;
-        }
-
-        .fullviewControls .fv-spin input[type=range] {
-            width: 80px;
-            accent-color: #ffd34d;
-        }
-
-        .fullviewControls .fv-btn {
-            background: rgba(10, 18, 26, .9);
-            border: 1px solid #2a3545;
-            color: #ffd34d;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
-            min-height: 36px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            width: auto;
-            margin: 0;
-            text-transform: none;
-            letter-spacing: 0;
-            box-shadow: none;
-        }
-
-        .fullviewControls .fv-btn:hover {
-            background: rgba(255, 211, 77, .15);
-        }
-
-        .exitFullview {
-            display: none;
-            position: fixed;
-            top: 12px;
-            right: 12px;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: rgba(10, 18, 26, .9);
-            border: 1px solid #ffd34d;
-            color: #ffd34d;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            z-index: 60;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            min-height: auto;
-        }
-
-        body.fullview .exitFullview {
-            display: flex;
-        }
-
-        .fullviewHUD {
-            display: none;
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            background: rgba(10, 18, 26, .85);
-            border: 1px solid #2a3545;
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-size: 11px;
-            color: #b0bec5;
-            z-index: 55;
-            gap: 12px;
-            align-items: center;
-        }
-
-        body.fullview .fullviewHUD {
-            display: flex;
-        }
-
-        .fullviewHUD .fv-stat {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .fullviewHUD .fv-stat b {
-            color: #ffd34d;
-            font-weight: 800;
-        }
-
-        .fullviewHUD .fv-turn {
-            background: rgba(255, 211, 77, .15);
-            padding: 3px 8px;
-            border-radius: 6px;
-            color: #ffd34d;
-            font-weight: 700;
-        }
-
         @media(max-width:1000px) {
             .layout {
                 grid-template-columns: 1fr
@@ -1456,7 +1351,7 @@
 
 <body>
     <div class="game">
-        <h1 class="float">🎱 Waseem Pool World <small>REALISTIC PHYSICS</small></h1>
+        <h1 class="float">🎱 Waseem Pool World <small>ULTIMATE</small></h1>
 
         <div class="topNav">
             <button class="nav-btn active" id="navQuick"><span class="ico">⚡</span><span class="label-text">Quick
@@ -1465,12 +1360,10 @@
                     class="label-text">Tournament</span></button>
             <button class="nav-btn" id="navPuzzles"><span class="ico">🎯</span><span
                     class="label-text">Puzzles</span></button>
-            <button class="nav-btn" id="navCues"><span class="ico">🎱</span><span
-                    class="label-text">Cues</span></button>
+            <button class="nav-btn" id="navCues"><span class="ico">🎱</span><span class="label-text">Cue
+                    Shop</span><span class="nav-coins-badge" id="navCoinsBadge">0</span></button>
             <button class="nav-btn" id="navAch"><span class="ico">🏅</span><span
                     class="label-text">Awards</span></button>
-            <button class="nav-btn" id="navFullview"><span class="ico">⛶</span><span class="label-text">Full
-                    View</span></button>
         </div>
 
         <div class="toolbar">
@@ -1496,7 +1389,7 @@
         <div class="layout">
             <div class="tableWrap" id="tableWrap">
                 <canvas id="table"></canvas>
-                <div class="sessionStats" id="sessionStats">
+                <div class="sessionStats">
                     <span>🎯 <b id="statShots">0</b></span>
                     <span>✅ <b id="statPots">0</b></span>
                     <span class="streak" id="statStreak">🔥 0</span>
@@ -1527,9 +1420,9 @@
                     <span id="modeBadge" class="mode-badge badge-vs">VS</span>
                 </div>
 
+                <div class="stat"><span>Coins</span><strong id="panelCoins" class="highlight">💰 0</strong></div>
                 <div class="stat"><span>Shots</span><strong id="shots">0</strong></div>
                 <div class="stat"><span>Fouls</span><strong id="fouls">P1: 0 | P2: 0</strong></div>
-                <div class="stat"><span>Win Streak</span><strong id="winStreak" class="highlight">0</strong></div>
                 <div class="stat"><span>Cue</span><strong id="cueName" class="highlight">Classic Wood</strong></div>
 
                 <div class="power-bar-wrap">
@@ -1546,10 +1439,8 @@
                     <span>🎯 Aim Assist</span>
                     <div class="toggle-switch on" id="aimAssistToggle"></div>
                 </div>
-                <div class="toggle-row">
-                    <span>✨ Ball Trails</span>
-                    <div class="toggle-switch on" id="trailsToggle"></div>
-                </div>
+
+                <button id="shopBtn" class="purple">🎱 Open Cue Shop</button>
 
                 <div class="btn-row3">
                     <button id="undo" class="secondary">↩ Undo</button>
@@ -1570,6 +1461,7 @@
             <h2 id="winner"></h2>
             <p id="final"></p>
             <div id="sessionRecap"></div>
+            <div class="coin-header"><span class="coin-icon">💰</span> Total Coins: <b id="winCoins">0</b></div>
             <button id="rematch">🔄 Rematch</button>
             <button id="home" class="secondary" style="margin-top:8px">🏠 Close</button>
         </div>
@@ -1602,8 +1494,14 @@
         <div class="win">
             <button class="closeX" onclick="document.getElementById('cuesOverlay').classList.remove('show')">✕</button>
             <div class="trophy">🎱</div>
-            <h2 style="font-size:22px">Cue Collection</h2>
-            <div class="progress-summary">💰 Coins: <b id="coinBalance">0</b></div>
+            <h2 style="font-size:22px">Cue Shop</h2>
+            <p style="font-size:12px;color:#8a99a8">Earn coins by pocketing balls, winning matches, and completing
+                tournaments. Buy premium cues for better power & spin!</p>
+            <div class="coin-header">
+                <span class="coin-icon">💰</span>
+                <b id="coinBalance">0</b>
+                <small>coins</small>
+            </div>
             <div class="cue-grid" id="cueGrid"></div>
         </div>
     </div>
@@ -1629,16 +1527,26 @@
                     <li>Drag further = more power (up to 100%).</li>
                     <li>Release to fire.</li>
                 </ul>
+                <h3>🎯 Aim Assist</h3>
+                <ul>
+                    <li><b>White dashed line</b> = cue ball trajectory</li>
+                    <li><b>Ghost ball</b> = where cue ball will contact</li>
+                    <li><b>Green line</b> = predicted object ball path</li>
+                    <li><b>Orange line</b> = cue ball deflection</li>
+                    <li><b>Gold ring</b> = pocket the object ball is aimed at</li>
+                    <li><b>Angle display</b> = shot direction in degrees</li>
+                </ul>
+                <h3>💰 Earning Coins</h3>
+                <ul>
+                    <li>+5 coins per ball pocketed</li>
+                    <li>+10 bonus per combo ball</li>
+                    <li>+50 to +150 for winning</li>
+                    <li>+500 to +5000 for tournaments</li>
+                </ul>
                 <h3>🎮 Controls</h3>
                 <ul>
-                    <li><kbd>Ctrl+Z</kbd> Undo · <kbd>R</kbd> Replay · <kbd>T</kbd> Theme</li>
-                    <li><kbd>A</kbd> Aim Assist · <kbd>H</kbd> Help · <kbd>F</kbd> Full View</li>
-                </ul>
-                <h3>⚡ Physics</h3>
-                <ul>
-                    <li>Realistic ball speeds and friction.</li>
-                    <li>Cushions absorb energy properly.</li>
-                    <li>Natural rolling and stopping.</li>
+                    <li><kbd>Ctrl+Z</kbd> Undo · <kbd>T</kbd> Theme · <kbd>H</kbd> Help</li>
+                    <li><kbd>A</kbd> Aim Assist · <kbd>S</kbd> Shop</li>
                 </ul>
             </div>
             <button onclick="document.getElementById('helpOverlay').classList.remove('show')"
@@ -1657,23 +1565,9 @@
 
     <div class="toast" id="toast"></div>
 
-    <button class="exitFullview" id="exitFullview">✕</button>
-    <div class="fullviewHUD" id="fullviewHUD">
-        <div class="fv-stat">🎯 <b id="fvShots">0</b></div>
-        <div class="fv-stat">✅ <b id="fvPots">0</b></div>
-        <div class="fv-turn" id="fvTurn">P1</div>
-    </div>
-
     <script>
         /* =========================================================
-           WASEEM POOL WORLD · REALISTIC PHYSICS ENGINE v2
-           =========================================================
-           COMPLETE PHYSICS REWRITE:
-           - Fixed timestep simulation (no more dt*60 compounding)
-           - Sub-stepping for collision accuracy
-           - Real-world friction (rolling resistance)
-           - Proper impulse-based collision response
-           - Realistic cushion damping
+           WASEEM POOL WORLD · FULL AIM ASSIST + CUE SHOP
            ========================================================= */
 
         const c = document.getElementById("table");
@@ -1696,116 +1590,65 @@
         ];
 
         /* =========================================================
-           REALISTIC PHYSICS CONSTANTS (REWRITTEN)
-           =========================================================
-           Units: pixels per second (real SI-like simulation)
-           - Table is ~900px wide = 2.24m real table = ~400 px/m
-           - Ball rolls realistically with proper deceleration
+           REALISTIC PHYSICS
            ========================================================= */
-
-        // Physics simulation timestep (fixed, in seconds)
-        const PHYS_DT = 1 / 120;   // 120 Hz sub-stepping for accuracy
+        const PHYS_DT = 1 / 120;
         const MAX_SUBSTEPS = 8;
-
-        // --- Ball physics (per-second units) ---
-        // Rolling friction: pool balls roll ~2-3 meters before stopping
-        // Deceleration on cloth is roughly 0.3 m/s²
-        // In pixel terms: ~120 px/s² deceleration
-        const ROLL_DECELERATION = 55;   // px/s² (rolling resistance)
-        const MIN_ROLL_SPEED = 3;       // px/s, below this ball stops
-        const MAX_BALL_SPEED = 950;     // px/s max (about 8 mph visual)
-
-        // --- Collision ---
-        // Coefficient of restitution for ball-ball (ivory/plastic pool balls)
+        const ROLL_DECELERATION = 55;
+        const MIN_ROLL_SPEED = 3;
+        const MAX_BALL_SPEED = 950;
         const BALL_RESTITUTION = 0.85;
-        // Coefficient of restitution for ball-cushion
         const CUSHION_RESTITUTION = 0.65;
-        // Tangential friction on cushion contact (reduces parallel velocity)
         const CUSHION_FRICTION = 0.25;
-
-        // --- Spin ---
-        const SPIN_DECAY_RATE = 0.92;    // per second
-        const SPIN_CURVE_FACTOR = 0.9;   // how much spin curves the path
-
-        // --- Pocket suction ---
+        const SPIN_DECAY_RATE = 0.92;
+        const SPIN_CURVE_FACTOR = 0.9;
         const POCKET_RADIUS = 26;
         const POCKET_SUCTION_RANGE = 42;
-        const POCKET_SUCTION_STRENGTH = 90; // px/s² pull
+        const POCKET_SUCTION_STRENGTH = 90;
 
-        const AIM_LINE_MAX_LEN = 700;
-        const AIM_RAY_STEPS = 260;
+        /* Aim assist constants */
+        const AIM_LINE_MAX_LEN = 900;
+        const AIM_RAY_STEPS = 300;
         const AIM_RAY_STEP = 3;
+        const AIM_PREDICT_OBJ_LEN = 260;
+        const AIM_PREDICT_CUE_LEN = 160;
         const HEAD_STRING_X = 225;
 
         const themes = {
-            classic: {
-                name: "Classic", rail1: "#4a2818", rail2: "#6b4428", rail3: "#5a3520",
-                felt0: "#1a7a50", felt1: "#126541", felt2: "#0e4d30", clothGlow: "rgba(255,255,255,.03)", aimColor: "#ffffff"
-            },
-            midnight: {
-                name: "Midnight", rail1: "#1a1a2a", rail2: "#2a2a40", rail3: "#202035",
-                felt0: "#0a3a5a", felt1: "#062a45", felt2: "#031a30", clothGlow: "rgba(100,180,255,.04)", aimColor: "#88ddff"
-            },
-            royal: {
-                name: "Royal", rail1: "#2a1040", rail2: "#4a2060", rail3: "#3a1850",
-                felt0: "#4a1060", felt1: "#360a48", felt2: "#240630", clothGlow: "rgba(255,100,255,.04)", aimColor: "#ffbbff"
-            },
-            crimson: {
-                name: "Crimson", rail1: "#3a0a0a", rail2: "#6a1515", rail3: "#501010",
-                felt0: "#8a1a1a", felt1: "#6a1010", felt2: "#4a0808", clothGlow: "rgba(255,150,150,.04)", aimColor: "#ffddaa"
-            }
+            classic: { name: "Classic", rail1: "#4a2818", rail2: "#6b4428", rail3: "#5a3520", felt0: "#1a7a50", felt1: "#126541", felt2: "#0e4d30", aimColor: "#ffffff" },
+            midnight: { name: "Midnight", rail1: "#1a1a2a", rail2: "#2a2a40", rail3: "#202035", felt0: "#0a3a5a", felt1: "#062a45", felt2: "#031a30", aimColor: "#88ddff" },
+            royal: { name: "Royal", rail1: "#2a1040", rail2: "#4a2060", rail3: "#3a1850", felt0: "#4a1060", felt1: "#360a48", felt2: "#240630", aimColor: "#ffbbff" },
+            crimson: { name: "Crimson", rail1: "#3a0a0a", rail2: "#6a1515", rail3: "#501010", felt0: "#8a1a1a", felt1: "#6a1010", felt2: "#4a0808", aimColor: "#ffddaa" }
         };
         let themeKey = "classic";
         let theme = themes.classic;
 
         const AI_LEVELS = {
-            easy: { name: "Easy", accuracy: 0.55, power: 400, error: 0.20 },
-            medium: { name: "Medium", accuracy: 0.75, power: 520, error: 0.10 },
-            hard: { name: "Hard", accuracy: 0.90, power: 620, error: 0.05 },
-            pro: { name: "Pro", accuracy: 0.98, power: 720, error: 0.02 }
+            easy: { name: "Easy", power: 400, error: 0.20 },
+            medium: { name: "Medium", power: 520, error: 0.10 },
+            hard: { name: "Hard", power: 620, error: 0.05 },
+            pro: { name: "Pro", power: 720, error: 0.02 }
         };
         let currentDifficulty = "medium";
 
+        /* =========================================================
+           CUE SHOP
+           ========================================================= */
         const CUES = {
-            classic: { name: "Classic Wood", icon: "🪵", desc: "Balanced starter cue", price: 0, powerMult: 1.0, spinMult: 1.0 },
-            carbon: { name: "Carbon Fiber", icon: "⚫", desc: "+10% power, +15% spin", price: 500, powerMult: 1.10, spinMult: 1.15 },
-            neon: { name: "Neon Strike", icon: "💡", desc: "+20% spin, +10% accuracy", price: 1200, powerMult: 1.05, spinMult: 1.20 },
-            gold: { name: "Golden Cue", icon: "👑", desc: "+25% power, +25% spin", price: 2500, powerMult: 1.25, spinMult: 1.25 }
+            classic: { name: "Classic Wood", icon: "🪵", desc: "Balanced starter cue", price: 0, powerMult: 1.0, spinMult: 1.0, barGrad: "linear-gradient(90deg,#d4a030,#8a5a20)" },
+            carbon: { name: "Carbon Fiber", icon: "⚫", desc: "+15% power, +10% spin", price: 300, powerMult: 1.15, spinMult: 1.10, barGrad: "linear-gradient(90deg,#2a2a2a,#555,#2a2a2a)" },
+            neon: { name: "Neon Strike", icon: "💡", desc: "+20% spin, +10% power", price: 800, powerMult: 1.10, spinMult: 1.20, barGrad: "linear-gradient(90deg,#00ffcc,#0088ff,#ff00cc)" },
+            gold: { name: "Golden Cue", icon: "👑", desc: "+30% power, +30% spin", price: 2000, powerMult: 1.30, spinMult: 1.30, barGrad: "linear-gradient(90deg,#ffe066,#ffd34d,#c49a3c)" },
+            diamond: { name: "Diamond Elite", icon: "💎", desc: "+50% power, +50% spin", price: 5000, powerMult: 1.50, spinMult: 1.50, barGrad: "linear-gradient(90deg,#aaddff,#ffffff,#88bbff)" }
         };
         let equippedCue = "classic";
         let unlockedCues = ["classic"];
         let coinBalance = 0;
         function getCue() { return CUES[equippedCue]; }
 
-        const PUZZLES = [
-            {
-                id: "p1", name: "Straight In", difficulty: "easy", maxShots: 1, stars: 0, desc: "Pocket the 8-ball in 1 shot.",
-                setup: () => { balls = [makeBall(300, 250, "#f7f7f2", 0), makeBall(600, 250, "#111", 8)]; pocketsHighlight = [2]; }
-            },
-            {
-                id: "p2", name: "Corner Pocket", difficulty: "easy", maxShots: 1, stars: 0, desc: "Pocket the 8-ball in the top-right corner.",
-                setup: () => { balls = [makeBall(400, 300, "#f7f7f2", 0), makeBall(700, 200, "#111", 8)]; pocketsHighlight = [2]; }
-            },
-            {
-                id: "p3", name: "Bank Shot", difficulty: "medium", maxShots: 1, stars: 0, desc: "Bank off the rail to pocket the 8.",
-                setup: () => { balls = [makeBall(200, 400, "#f7f7f2", 0), makeBall(400, 150, "#111", 8)]; pocketsHighlight = [0]; }
-            },
-            {
-                id: "p4", name: "Two for One", difficulty: "medium", maxShots: 2, stars: 0, desc: "Pocket both object balls.",
-                setup: () => { balls = [makeBall(250, 250, "#f7f7f2", 0), makeBall(500, 200, "#e8c43a", 1), makeBall(650, 350, "#326bd3", 2)]; pocketsHighlight = [2, 5]; }
-            },
-            {
-                id: "p5", name: "Combination", difficulty: "hard", maxShots: 1, stars: 0, desc: "Hit ball 1 into ball 8 to pocket it.",
-                setup: () => { balls = [makeBall(200, 250, "#f7f7f2", 0), makeBall(500, 250, "#e8c43a", 1), makeBall(700, 250, "#111", 8)]; pocketsHighlight = [2]; }
-            },
-            {
-                id: "p6", name: "Champion's Test", difficulty: "extreme", maxShots: 2, stars: 0, desc: "Clear all balls in 2 shots.",
-                setup: () => { balls = [makeBall(200, 250, "#f7f7f2", 0), makeBall(400, 200, "#e8c43a", 1), makeBall(450, 300, "#326bd3", 2), makeBall(600, 250, "#111", 8)]; pocketsHighlight = [2, 5]; }
-            }
-        ];
-        let currentPuzzle = null;
-        let puzzleShotsUsed = 0;
-
+        /* =========================================================
+           ACHIEVEMENTS
+           ========================================================= */
         const ACHIEVEMENTS = [
             { id: "first_pot", name: "First Blood", desc: "Pocket your first ball", icon: "🩸", unlocked: false },
             { id: "first_win", name: "Winner Winner", desc: "Win your first match", icon: "🏆", unlocked: false },
@@ -1817,14 +1660,14 @@
             { id: "streak_5", name: "Unstoppable", desc: "Win 5 matches in a row", icon: "⚡", unlocked: false },
             { id: "tournament_win", name: "Tournament Champ", desc: "Win a full tournament", icon: "🥇", unlocked: false },
             { id: "puzzle_1", name: "Puzzle Solver", desc: "Complete your first puzzle", icon: "🧩", unlocked: false },
-            { id: "puzzle_all_stars", name: "Perfectionist", desc: "Get 3 stars on any puzzle", icon: "⭐", unlocked: false },
             { id: "beat_pro", name: "Pro Slayer", desc: "Beat a Pro-level AI", icon: "💀", unlocked: false },
             { id: "beat_hard", name: "Hard Hitter", desc: "Beat a Hard-level AI", icon: "🔴", unlocked: false },
             { id: "cue_collector", name: "Cue Collector", desc: "Unlock 3 cues", icon: "🎱", unlocked: false },
+            { id: "cue_master", name: "Cue Master", desc: "Own all 5 cues", icon: "👑", unlocked: false },
             { id: "coin_1000", name: "Coin Pincher", desc: "Earn 1000 coins total", icon: "💰", unlocked: false },
+            { id: "coin_5000", name: "Big Spender", desc: "Earn 5000 coins total", icon: "💎", unlocked: false },
             { id: "shot_50", name: "Sharpshooter", desc: "Take 50 shots", icon: "🎯", unlocked: false },
-            { id: "shot_200", name: "Veteran", desc: "Take 200 shots", icon: "🎖️", unlocked: false },
-            { id: "no_foul", name: "Perfect Play", desc: "Win a match with 0 fouls", icon: "✨", unlocked: false },
+            { id: "no_foul", name: "Perfect Play", desc: "Win with 0 fouls", icon: "✨", unlocked: false },
             { id: "theme_master", name: "Interior Designer", desc: "Try all 4 themes", icon: "🎨", unlocked: false },
             { id: "night_owl", name: "Night Owl", desc: "Play after midnight", icon: "🦉", unlocked: false }
         ];
@@ -1840,10 +1683,9 @@
         let simulating = false;
         let raf = null;
         let lastFrameTime = 0;
+        let accumulator = 0;
         let mode = "vs";
         let particles = [];
-        let ballTrails = [];
-        let ghostTrails = [];
         let undoStack = [];
         let shotCount = 0;
         let combo = 0;
@@ -1854,7 +1696,6 @@
         let audioCtx = null;
         let soundEnabled = true;
         let aimAssist = true;
-        let trailsEnabled = true;
 
         let groups = ["open", "open"];
         let isBreak = true;
@@ -1869,32 +1710,32 @@
 
         let currentContext = "quick";
         let matchStartTime = 0;
-        let pocketsHighlight = [];
-        let fullViewActive = false;
+
         let sessionStats = { totalShots: 0, totalPots: 0, longestCombo: 0, winStreak: 0, coinsEarned: 0, themesUsed: [] };
 
         function loadAll() {
             try {
-                let s = JSON.parse(localStorage.getItem("waseemUltimate") || "null");
+                let s = JSON.parse(localStorage.getItem("waseemUltimateV4") || "null");
                 if (s) {
                     sessionStats = { ...sessionStats, ...(s.stats || {}) };
                     ACHIEVEMENTS.forEach(a => { let sv = (s.achievements || []).find(y => y.id === a.id); if (sv) a.unlocked = sv.unlocked; });
-                    PUZZLES.forEach(p => { let sv = (s.puzzles || []).find(y => y.id === p.id); if (sv) p.stars = sv.stars; });
                     equippedCue = s.equippedCue || "classic";
                     unlockedCues = s.unlockedCues || ["classic"];
-                    coinBalance = s.coins || 0;
+                    coinBalance = (typeof s.coins === "number") ? s.coins : 300;
                     currentDifficulty = s.difficulty || "medium";
                     tournamentBracket = s.tournamentBracket || null;
                     tournamentPlayerWins = s.tournamentPlayerWins || 0;
+                } else {
+                    coinBalance = 300;
+                    saveAll();
                 }
-            } catch (e) { }
+            } catch (e) { coinBalance = 300; }
         }
         function saveAll() {
             try {
-                localStorage.setItem("waseemUltimate", JSON.stringify({
+                localStorage.setItem("waseemUltimateV4", JSON.stringify({
                     stats: sessionStats,
                     achievements: ACHIEVEMENTS.map(a => ({ id: a.id, unlocked: a.unlocked })),
-                    puzzles: PUZZLES.map(p => ({ id: p.id, stars: p.stars })),
                     equippedCue, unlockedCues, coins: coinBalance, difficulty: currentDifficulty,
                     tournamentBracket, tournamentPlayerWins, savedAt: Date.now()
                 }));
@@ -1917,6 +1758,39 @@
             return { x: (cx - q.left) * W / q.width, y: (cy - q.top) * H / q.height };
         }
 
+        /* COINS */
+        function awardCoins(amount, fromX = W / 2, fromY = H / 2) {
+            if (amount <= 0) return;
+            coinBalance += amount;
+            sessionStats.coinsEarned += amount;
+            updateCoinDisplays();
+            showCoinFloat(amount, fromX, fromY);
+            saveAll();
+            if (coinBalance >= 1000) unlockAchievement("coin_1000");
+            if (sessionStats.coinsEarned >= 5000) unlockAchievement("coin_5000");
+        }
+        function updateCoinDisplays() {
+            document.getElementById("coinBalance").textContent = coinBalance;
+            document.getElementById("navCoinsBadge").textContent = coinBalance;
+            document.getElementById("panelCoins").textContent = "💰 " + coinBalance;
+            let wc = document.getElementById("winCoins");
+            if (wc) wc.textContent = coinBalance;
+        }
+        function showCoinFloat(amount, tx, ty) {
+            let rect = c.getBoundingClientRect();
+            let vx = rect.left + (tx / W) * rect.width;
+            let vy = rect.top + (ty / H) * rect.height;
+            let el = document.createElement("div");
+            el.className = "coin-float";
+            el.textContent = "+" + amount + " 💰";
+            el.style.left = vx + "px";
+            el.style.top = vy + "px";
+            el.style.transform = "translate(-50%,-50%)";
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1200);
+        }
+
+        /* AUDIO */
         function initAudio() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } }
         function playSound(freq, dur, type = "sine", vol = .3) {
             if (!soundEnabled) return;
@@ -1935,7 +1809,9 @@
         const playWinSound = () => { playSound(523, .15, "sine", .12); setTimeout(() => playSound(659, .15, "sine", .12), 150); setTimeout(() => playSound(784, .2, "sine", .12), 300); setTimeout(() => playSound(1047, .3, "sine", .12), 450); };
         const playLoseSound = () => { playSound(400, .2, "sine", .1); setTimeout(() => playSound(300, .3, "sine", .1), 180); setTimeout(() => playSound(200, .5, "sine", .1), 400); };
         const playAchSound = () => { playSound(880, .1, "triangle", .15); setTimeout(() => playSound(1100, .1, "triangle", .15), 100); setTimeout(() => playSound(1320, .2, "triangle", .15), 200); };
+        const playCoinSound = () => { playSound(1400, .08, "triangle", .1); setTimeout(() => playSound(1800, .1, "triangle", .1), 50); };
 
+        /* ACHIEVEMENTS */
         function unlockAchievement(id) {
             let ach = ACHIEVEMENTS.find(a => a.id === id);
             if (!ach || ach.unlocked) return;
@@ -1961,65 +1837,948 @@
       ${a.unlocked ? '<div class="ach-check">✓</div>' : ''}
     </div>`).join('');
         }
+
+        /* CUE SHOP */
         function renderCues() {
             let grid = document.getElementById("cueGrid");
             document.getElementById("coinBalance").textContent = coinBalance;
+            document.getElementById("navCoinsBadge").textContent = coinBalance;
+            document.getElementById("panelCoins").textContent = "💰 " + coinBalance;
+
             grid.innerHTML = Object.entries(CUES).map(([id, cue]) => {
-                let unlocked = unlockedCues.includes(id), selected = equippedCue === id, canAfford = coinBalance >= cue.price;
+                let unlocked = unlockedCues.includes(id);
+                let selected = equippedCue === id;
+                let canAfford = coinBalance >= cue.price;
                 let cls = (!unlocked && !canAfford) ? "locked" : "";
                 let sel = selected ? "selected" : "";
-                let priceText = unlocked ? (selected ? "✓ Equipped" : "Click to equip") : (canAfford ? `💰 ${cue.price}` : `🔒 ${cue.price} coins`);
-                return `<div class="cue-card ${cls} ${sel}" data-cue="${id}">
-      <div class="cue-icon">${cue.icon}</div><div class="cue-name">${cue.name}</div>
-      <div class="cue-desc">${cue.desc}</div><div class="cue-price">${priceText}</div></div>`;
+                let badge = "";
+                if (selected) badge = '<div class="cue-badge equipped">EQUIPPED</div>';
+                else if (!unlocked && !canAfford) badge = '<div class="cue-badge locked">LOCKED</div>';
+
+                let priceText;
+                if (unlocked) priceText = selected ? "✓ Equipped" : "Click to equip";
+                else priceText = canAfford ? `💰 Buy for ${cue.price}` : `🔒 ${cue.price - coinBalance} more needed`;
+
+                return `
+      <div class="cue-card ${cls} ${sel}" data-cue="${id}">
+        ${badge}
+        <div class="cue-stick-preview">
+          <div class="cue-stick-bar" style="background:${cue.barGrad}"></div>
+        </div>
+        <div class="cue-icon">${cue.icon}</div>
+        <div class="cue-name">${cue.name}</div>
+        <div class="cue-desc">${cue.desc}</div>
+        <div class="cue-stats">
+          <span>⚡ ${Math.round((cue.powerMult - 1) * 100)}%</span>
+          <span>🌀 ${Math.round((cue.spinMult - 1) * 100)}%</span>
+        </div>
+        <div class="cue-price">${priceText}</div>
+      </div>
+    `;
             }).join('');
+
             grid.querySelectorAll(".cue-card").forEach(card => {
-                card.onclick = () => {
-                    let id = card.dataset.cue;
-                    if (unlockedCues.includes(id)) {
-                        equippedCue = id; document.getElementById("cueName").textContent = CUES[id].name;
-                        saveAll(); renderCues(); showToast(`🎱 Equipped: ${CUES[id].name}`, "gold");
-                    } else {
-                        let cue = CUES[id];
-                        if (coinBalance >= cue.price) {
-                            coinBalance -= cue.price; unlockedCues.push(id); equippedCue = id;
-                            document.getElementById("cueName").textContent = cue.name;
-                            saveAll(); renderCues(); showToast(`✨ Unlocked: ${cue.name}!`, "green");
-                            if (unlockedCues.length >= 3) unlockAchievement("cue_collector");
-                        } else showToast(`❌ Need ${cue.price - coinBalance} more coins`, "red");
-                    }
-                };
+                card.onclick = () => handleCueClick(card.dataset.cue);
             });
         }
-        function renderPuzzles() {
-            let grid = document.getElementById("puzzleGrid");
-            grid.innerHTML = PUZZLES.map((p, i) => {
-                let unlocked = i === 0 || PUZZLES[i - 1].stars > 0;
-                let stars = "★".repeat(p.stars) + "☆".repeat(3 - p.stars);
-                return `<div class="puzzle-card ${unlocked ? '' : 'locked'}" data-puzzle="${p.id}">
-      <div class="puzzle-info"><div class="puzzle-name">${unlocked ? p.name : '🔒 ' + p.name}</div>
-      <div class="puzzle-desc">${p.desc}</div><span class="difficulty ${p.difficulty}">${p.difficulty}</span></div>
-      <div class="stars">${stars}</div></div>`;
-            }).join('');
-            grid.querySelectorAll(".puzzle-card").forEach(card => {
-                card.onclick = () => {
-                    let id = card.dataset.puzzle;
-                    let idx = PUZZLES.findIndex(p => p.id === id);
-                    if (!(idx === 0 || PUZZLES[idx - 1].stars > 0)) { showToast("🔒 Complete previous first", "red"); return; }
-                    startPuzzle(id);
-                };
-            });
-        }
-        function startPuzzle(id) {
-            let puzzle = PUZZLES.find(p => p.id === id);
-            if (!puzzle) return;
-            currentPuzzle = puzzle; currentContext = "puzzle"; puzzleShotsUsed = 0;
-            document.getElementById("puzzlesOverlay").classList.remove("show");
-            document.getElementById("navPuzzles").classList.remove("active");
-            document.getElementById("navQuick").classList.add("active");
-            reset(); showToast(`🎯 Puzzle: ${puzzle.name}`, "gold");
+        function handleCueClick(id) {
+            let cue = CUES[id];
+            if (!cue) return;
+            if (unlockedCues.includes(id)) {
+                if (equippedCue === id) { showToast(`✅ ${cue.name} already equipped`, "gold"); return; }
+                equippedCue = id;
+                document.getElementById("cueName").textContent = cue.name;
+                saveAll(); renderCues();
+                showToast(`🎱 Equipped: ${cue.name}`, "green");
+                playCoinSound();
+                return;
+            }
+            if (coinBalance < cue.price) {
+                showToast(`❌ Need ${cue.price - coinBalance} more coins!`, "red");
+                return;
+            }
+            coinBalance -= cue.price;
+            unlockedCues.push(id);
+            equippedCue = id;
+            document.getElementById("cueName").textContent = cue.name;
+            saveAll(); renderCues(); updateCoinDisplays();
+            showToast(`✨ Purchased & equipped: ${cue.name}!`, "green");
+            playWinSound();
+            if (unlockedCues.length >= 3) unlockAchievement("cue_collector");
+            if (unlockedCues.length >= Object.keys(CUES).length) unlockAchievement("cue_master");
         }
 
+        /* UI */
+        const spinEl = document.getElementById("spin");
+        const msg = document.getElementById("message");
+        const overlay = document.getElementById("overlay");
+        const toast = document.getElementById("toast");
+
+        let toastTimer = null;
+        function showToast(text, type = "") {
+            toast.textContent = text; toast.className = "toast show" + (type ? " " + type : "");
+            clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.className = "toast", 2200);
+        }
+        function resizeCanvas() {
+            let wrap = c.parentElement;
+            let w = wrap.clientWidth - (window.innerWidth < 640 ? 12 : 24);
+            let ratio = W / H;
+            let maxH = window.innerHeight - (window.innerWidth < 1000 ? 300 : 220);
+            let h = Math.min(w / ratio, Math.max(maxH, 180));
+            if (h < 180) h = 180;
+            w = h * ratio;
+            c.width = W; c.height = H;
+            c.style.width = w + "px"; c.style.height = h + "px";
+        }
+        function update() {
+            document.getElementById("p1").textContent = scores[0];
+            document.getElementById("p2").textContent = scores[1];
+            document.getElementById("turn").textContent = "Player " + (turn + 1) + "'s Turn";
+            document.getElementById("shots").textContent = shotCount;
+            document.getElementById("fouls").textContent = `P1: ${fouls[0]} | P2: ${fouls[1]}`;
+            let sv = +spinEl.value;
+            document.getElementById("spinText").textContent = sv > .05 ? "Topspin ⚡" : sv < -.05 ? "Backspin ⚡" : "Center ⚙️";
+            let badge = document.getElementById("modeBadge");
+            if (currentContext === "tournament") { badge.textContent = "🏆 TOURNEY"; badge.className = "mode-badge badge-tourney"; }
+            else if (currentContext === "puzzle") { badge.textContent = "🎯 PUZZLE"; badge.className = "mode-badge badge-vs"; }
+            else { badge.textContent = mode === "ai" ? "🤖 AI" : "👥 VS"; badge.className = "mode-badge " + (mode === "ai" ? "badge-ai" : "badge-vs"); }
+            document.getElementById("card1").classList.toggle("active", turn === 0 && !gameOver);
+            document.getElementById("card2").classList.toggle("active", turn === 1 && !gameOver);
+            updateGroupBadge(1, groups[0]); updateGroupBadge(2, groups[1]);
+            document.getElementById("statShots").textContent = sessionStats.totalShots;
+            document.getElementById("statPots").textContent = sessionStats.totalPots;
+            document.getElementById("statStreak").textContent = "🔥 " + sessionStats.winStreak;
+            document.getElementById("cueName").textContent = getCue().name;
+            updateCoinDisplays();
+            if (ballInHand && !gameOver && !simulating) {
+                setMessage(`🖐️ <span style="color:#ffd34d;font-weight:700">BALL IN HAND</span> — tap to place cue ball`, false);
+            }
+        }
+        function setMessage(text, flash = true, type = "") {
+            msg.innerHTML = text;
+            msg.classList.remove("foul", "success");
+            if (type) msg.classList.add(type);
+            if (flash) { msg.classList.remove("flash"); void msg.offsetWidth; msg.classList.add("flash"); }
+        }
+        function updateGroupBadge(pn, group) {
+            let el = document.getElementById("group" + pn);
+            el.className = "group-badge " + group;
+            if (group === "solids") el.textContent = "SOLIDS 1-7";
+            else if (group === "stripes") el.textContent = "STRIPES 9-15";
+            else el.textContent = "OPEN";
+        }
+        function onEightBall(player) { if (groups[player] === "open") return false; return countRemainingInGroup(groups[player]) === 0; }
+        function countRemainingInGroup(group) {
+            if (group === "solids") return balls.filter(b => b.active && b.num >= 1 && b.num <= 7).length;
+            if (group === "stripes") return balls.filter(b => b.active && b.num >= 9 && b.num <= 15).length;
+            return 0;
+        }
+        function groupOf(num) {
+            if (num >= 1 && num <= 7) return "solids";
+            if (num >= 9 && num <= 15) return "stripes";
+            if (num === 8) return "eight";
+            return "cue";
+        }
+
+        /* RESET */
+        function reset() {
+            cancelAnimationFrame(raf);
+            balls = []; scores = [0, 0]; fouls = [0, 0]; turn = 0;
+            gameOver = false; ballInHand = false; simulating = false;
+            particles = []; undoStack = [];
+            shotCount = 0; combo = 0; maxCombo = 0;
+            groups = ["open", "open"]; isBreak = true; calledPocket = null;
+            ballInHandKitchen = false; resetShotEvents();
+            aim = false;
+            resizeCanvas(); applyThemeToDOM();
+
+            balls.push(makeBall(245, 250, "#f7f7f2", 0));
+            let rackOrder = [1, 2, 9, 3, 8, 10, 4, 14, 11, 5, 6, 12, 13, 7, 15];
+            let sx = 650, sep = 25.2, bi = 0;
+            for (let row = 0; row < 5; row++)
+                for (let col = 0; col <= row; col++) {
+                    let num = rackOrder[bi++];
+                    balls.push(makeBall(sx + row * 21.7, 250 + (col - row / 2) * sep, colors[num], num));
+                }
+            setMessage("🎱 Drag BACKWARD from cue ball to shoot!");
+            update(); updateHistory();
+            raf = requestAnimationFrame(loop);
+        }
+        function newShotEvents() {
+            return { firstHit: null, pocketedThisShot: [], cueScratched: false, railAfterContact: false, anyContact: false, brokeRack: false, eightBallPocket: undefined };
+        }
+        function resetShotEvents() { shotEvents = newShotEvents(); }
+        function updateHistory() {
+            let el = document.getElementById("history");
+            if (!el) return;
+            if (!shotHistory.length) { el.innerHTML = ""; return; }
+            el.innerHTML = shotHistory.slice(-6).map(s => {
+                let p = s.player === 1 ? "P1" : "P2";
+                let c2 = s.foul ? "#e74c3c" : (s.pocketed > 0 ? "#2ecc71" : "#8a99a8");
+                let l = s.foul ? "foul" : `${s.pocketed} pocketed`;
+                return `<div><span>${p} shot</span><span style="color:${c2}">${l}</span></div>`;
+            }).join('');
+        }
+
+        /* SIMULATION */
+        function startSimulation() {
+            cancelAnimationFrame(raf);
+            aim = false; simulating = true;
+            lastFrameTime = performance.now(); accumulator = 0;
+            resetShotEvents();
+            setMessage(`🎯 Player ${turn + 1} shooting...`);
+            raf = requestAnimationFrame(simulateStep);
+        }
+        function simulateStep() {
+            let now = performance.now();
+            let ft = (now - lastFrameTime) / 1000;
+            lastFrameTime = now;
+            if (ft > 0.1) ft = 0.1;
+            accumulator += ft;
+
+            let steps = 0;
+            while (accumulator >= PHYS_DT && steps < MAX_SUBSTEPS) {
+                physicsStep(PHYS_DT);
+                accumulator -= PHYS_DT;
+                steps++;
+            }
+            draw();
+
+            let anyMoving = balls.some(b => b.active && (Math.abs(b.vx) > 0.5 || Math.abs(b.vy) > 0.5));
+            if (anyMoving) {
+                raf = requestAnimationFrame(simulateStep);
+            } else {
+                for (let b of balls) if (b.active) { b.vx = 0; b.vy = 0; b.spin = 0; }
+                simulating = false;
+                finishShot();
+            }
+        }
+        function physicsStep(dt) {
+            let active = balls.filter(b => b.active);
+            for (let b of active) {
+                b.x += b.vx * dt;
+                b.y += b.vy * dt;
+                let speed = Math.hypot(b.vx, b.vy);
+                if (speed > 0) {
+                    let decel = ROLL_DECELERATION * dt;
+                    let newSpeed = Math.max(0, speed - decel);
+                    if (newSpeed < MIN_ROLL_SPEED) newSpeed = 0;
+                    let scale = speed > 0 ? newSpeed / speed : 0;
+                    b.vx *= scale; b.vy *= scale;
+                }
+                b.spin *= Math.pow(SPIN_DECAY_RATE, dt);
+                if (Math.abs(b.spin) > 0.05 && speed > 5) {
+                    let perpX = -b.vy / speed, perpY = b.vx / speed;
+                    b.vx += perpX * b.spin * SPIN_CURVE_FACTOR * dt * 20;
+                    b.vy += perpY * b.spin * SPIN_CURVE_FACTOR * dt * 20;
+                }
+                for (let pi = 0; pi < pockets.length; pi++) {
+                    let p = pockets[pi];
+                    let dx = p.x - b.x, dy = p.y - b.y, dist = Math.hypot(dx, dy);
+                    if (dist < POCKET_SUCTION_RANGE && dist > POCKET_RADIUS) {
+                        let pull = POCKET_SUCTION_STRENGTH * dt;
+                        b.vx += (dx / dist) * pull;
+                        b.vy += (dy / dist) * pull;
+                    }
+                    if (dist < POCKET_RADIUS) {
+                        b.active = false; b.vx = b.vy = b.spin = 0;
+                        if (b.num === 0) shotEvents.cueScratched = true;
+                        else {
+                            shotEvents.pocketedThisShot.push(b.num);
+                            if (b.num === 8) shotEvents.eightBallPocket = pi;
+                            playPocketSound(); addPocketParticles();
+                            unlockAchievement("first_pot");
+                            awardCoins(5, p.x, p.y);
+                        }
+                        break;
+                    }
+                }
+                if (!b.active) continue;
+                if (b.x < rail + R) { b.x = rail + R; b.vx = Math.abs(b.vx) * CUSHION_RESTITUTION; b.vy *= (1 - CUSHION_FRICTION * dt * 60); if (Math.abs(b.vx) > 30) playHitSound(); if (shotEvents.anyContact) shotEvents.railAfterContact = true; }
+                if (b.x > W - rail - R) { b.x = W - rail - R; b.vx = -Math.abs(b.vx) * CUSHION_RESTITUTION; b.vy *= (1 - CUSHION_FRICTION * dt * 60); if (Math.abs(b.vx) > 30) playHitSound(); if (shotEvents.anyContact) shotEvents.railAfterContact = true; }
+                if (b.y < rail + R) { b.y = rail + R; b.vy = Math.abs(b.vy) * CUSHION_RESTITUTION; b.vx *= (1 - CUSHION_FRICTION * dt * 60); if (Math.abs(b.vy) > 30) playHitSound(); if (shotEvents.anyContact) shotEvents.railAfterContact = true; }
+                if (b.y > H - rail - R) { b.y = H - rail - R; b.vy = -Math.abs(b.vy) * CUSHION_RESTITUTION; b.vx *= (1 - CUSHION_FRICTION * dt * 60); if (Math.abs(b.vy) > 30) playHitSound(); if (shotEvents.anyContact) shotEvents.railAfterContact = true; }
+            }
+            for (let i = 0; i < active.length; i++) {
+                for (let j = i + 1; j < active.length; j++) {
+                    let a = active[i], b = active[j];
+                    if (!a.active || !b.active) continue;
+                    let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), minD = a.r + b.r;
+                    if (d === 0 || d >= minD) continue;
+                    if ((a.num === 0 || b.num === 0) && !shotEvents.anyContact) {
+                        let other = a.num === 0 ? b : a;
+                        shotEvents.firstHit = other.num;
+                        shotEvents.anyContact = true;
+                        if (isBreak && other.num !== 0) shotEvents.brokeRack = true;
+                    }
+                    let nx = dx / d, ny = dy / d, overlap = minD - d;
+                    a.x -= nx * overlap / 2; a.y -= ny * overlap / 2;
+                    b.x += nx * overlap / 2; b.y += ny * overlap / 2;
+                    let rvx = b.vx - a.vx, rvy = b.vy - a.vy, vn = rvx * nx + rvy * ny;
+                    if (vn > 0) continue;
+                    let imp = -(1 + BALL_RESTITUTION) * vn / 2;
+                    a.vx -= imp * nx; a.vy -= imp * ny;
+                    b.vx += imp * nx; b.vy += imp * ny;
+                    if (Math.abs(vn) > 30) playHitSound(Math.min(Math.abs(vn) / 300, 1));
+                }
+            }
+        }
+
+        /* =========================================================
+           FULL AIM ASSIST (RESTORED)
+           ========================================================= */
+        function raycastToFirstBall(x0, y0, dx, dy, ignoreBall) {
+            let cx = x0, cy = y0;
+            let lastDX = dx, lastDY = dy;
+            for (let s = 0; s < AIM_RAY_STEPS; s++) {
+                cx += dx * AIM_RAY_STEP; cy += dy * AIM_RAY_STEP;
+                if (cx < rail + R) { cx = rail + R; dx = Math.abs(dx); }
+                else if (cx > W - rail - R) { cx = W - rail - R; dx = -Math.abs(dx); }
+                if (cy < rail + R) { cy = rail + R; dy = Math.abs(dy); }
+                else if (cy > H - rail - R) { cy = H - rail - R; dy = -Math.abs(dy); }
+                lastDX = dx; lastDY = dy;
+                for (let b of balls) {
+                    if (!b.active || b === ignoreBall) continue;
+                    let ddx = cx - b.x, ddy = cy - b.y;
+                    if (Math.hypot(ddx, ddy) < R + R) {
+                        let nrm = Math.hypot(ddx, ddy) || 1;
+                        let nx = ddx / nrm, ny = ddy / nrm;
+                        return {
+                            hit: true,
+                            x: b.x + nx * R,
+                            y: b.y + ny * R,
+                            ball: b,
+                            nx, ny,
+                            rayDirX: lastDX,
+                            rayDirY: lastDY
+                        };
+                    }
+                }
+                if (Math.hypot(cx - x0, cy - y0) > AIM_LINE_MAX_LEN) break;
+            }
+            return { hit: false, x: cx, y: cy, rayDirX: lastDX, rayDirY: lastDY };
+        }
+        function clipLineToTable(x0, y0, x1, y1) {
+            let dx = x1 - x0, dy = y1 - y0, t = 1;
+            let minX = rail + R, maxX = W - rail - R, minY = rail + R, maxY = H - rail - R;
+            if (x1 < minX) t = Math.min(t, (minX - x0) / (dx || 1));
+            if (x1 > maxX) t = Math.min(t, (maxX - x0) / (dx || 1));
+            if (y1 < minY) t = Math.min(t, (minY - y0) / (dy || 1));
+            if (y1 > maxY) t = Math.min(t, (maxY - y0) / (dy || 1));
+            if (t < 0) t = 0; if (t > 1) t = 1;
+            return { x: x0 + dx * t, y: y0 + dy * t };
+        }
+        function findAimedPocket(bx, by, dx, dy) {
+            let best = null, bestScore = Infinity;
+            for (let p of pockets) {
+                let toX = p.x - bx, toY = p.y - by, dist = Math.hypot(toX, toY);
+                if (dist < 1) continue;
+                let ndx = toX / dist, ndy = toY / dist;
+                let dot = ndx * dx + ndy * dy;
+                if (dot < 0.85) continue;
+                let score = dist * (2 - dot);
+                if (score < bestScore) { bestScore = score; best = { pocket: p, dist, dot }; }
+            }
+            return best;
+        }
+
+        function drawAimAssist() {
+            if (!aim || ballInHand || gameOver || simulating) return;
+            let q = balls[0];
+            if (!q || !q.active) return;
+            let dx = q.x - mouse.x, dy = q.y - mouse.y;
+            let d = Math.hypot(dx, dy);
+            if (d < 4) return;
+            let nx = dx / d, ny = dy / d;
+
+            // Cast ray to find collision
+            let hit = raycastToFirstBall(q.x, q.y, nx, ny, q);
+            let leX = hit.hit ? hit.x : q.x + nx * AIM_LINE_MAX_LEN;
+            let leY = hit.hit ? hit.y : q.y + ny * AIM_LINE_MAX_LEN;
+
+            // 1. Main aim line (dashed, glowing)
+            x.save();
+            x.setLineDash([10, 7]);
+            x.lineWidth = 2.5;
+            x.strokeStyle = "rgba(255,255,255,.9)";
+            x.shadowColor = theme.aimColor;
+            x.shadowBlur = 10;
+            x.beginPath();
+            x.moveTo(q.x, q.y);
+            x.lineTo(leX, leY);
+            x.stroke();
+            x.restore();
+
+            // 2. Angle display in degrees
+            let angleDeg = Math.round(Math.atan2(ny, nx) * 180 / Math.PI);
+            x.save();
+            x.fillStyle = "rgba(255,211,77,.95)";
+            x.font = "bold 12px monospace";
+            x.textAlign = "center";
+            x.textBaseline = "middle";
+            // Position label slightly offset from cue ball
+            x.fillText(`${angleDeg}°`, q.x - nx * 55, q.y - ny * 55);
+            x.restore();
+
+            // 3. If we hit a ball — draw ghost, object path, deflection, pocket hint
+            if (hit.hit && hit.ball) {
+                // Ghost ball (dashed outline showing where cue ball will be at impact)
+                x.save();
+                x.setLineDash([4, 3]);
+                x.strokeStyle = "rgba(255,255,255,.95)";
+                x.lineWidth = 2;
+                x.shadowColor = "#ffffff";
+                x.shadowBlur = 6;
+                x.beginPath();
+                x.arc(hit.x, hit.y, R, 0, Math.PI * 2);
+                x.stroke();
+                x.restore();
+
+                // Soft ghost fill
+                let ghostGrad = x.createRadialGradient(hit.x, hit.y, 2, hit.x, hit.y, R);
+                ghostGrad.addColorStop(0, "rgba(255,255,255,.20)");
+                ghostGrad.addColorStop(1, "rgba(255,255,255,0)");
+                x.fillStyle = ghostGrad;
+                x.beginPath();
+                x.arc(hit.x, hit.y, R, 0, Math.PI * 2);
+                x.fill();
+
+                // Object ball direction (from ghost ball center to object ball center)
+                let obx = hit.ball.x - hit.x;
+                let oby = hit.ball.y - hit.y;
+                let obd = Math.hypot(obx, oby) || 1;
+                let objNx = obx / obd, objNy = oby / obd;
+
+                // Object ball predicted path (green)
+                let objEnd = clipLineToTable(
+                    hit.ball.x, hit.ball.y,
+                    hit.ball.x + objNx * AIM_PREDICT_OBJ_LEN,
+                    hit.ball.y + objNy * AIM_PREDICT_OBJ_LEN
+                );
+                x.save();
+                x.lineWidth = 3;
+                x.strokeStyle = "rgba(46,204,113,.95)";
+                x.shadowColor = "#2ecc71";
+                x.shadowBlur = 12;
+                x.beginPath();
+                x.moveTo(hit.ball.x, hit.ball.y);
+                x.lineTo(objEnd.x, objEnd.y);
+                x.stroke();
+                x.restore();
+
+                // Check if object ball is aimed at a pocket
+                let aimed = findAimedPocket(hit.ball.x, hit.ball.y, objNx, objNy);
+                if (aimed) {
+                    let pulse = Math.sin(Date.now() * .008) * 0.15 + 0.85;
+                    x.save();
+                    x.strokeStyle = `rgba(255,211,77,${pulse})`;
+                    x.shadowColor = "#ffd34d";
+                    x.shadowBlur = 18;
+                    x.lineWidth = 3;
+                    x.beginPath();
+                    x.arc(aimed.pocket.x, aimed.pocket.y, 32, 0, Math.PI * 2);
+                    x.stroke();
+
+                    // Dotted line from object ball to pocket
+                    x.setLineDash([5, 6]);
+                    x.lineWidth = 1.5;
+                    x.strokeStyle = "rgba(255,211,77,.7)";
+                    x.beginPath();
+                    x.moveTo(hit.ball.x, hit.ball.y);
+                    x.lineTo(aimed.pocket.x, aimed.pocket.y);
+                    x.stroke();
+                    x.restore();
+                }
+
+                // Cue ball deflection (tangent line)
+                let tanX = -objNy, tanY = objNx;
+                if (tanX * nx + tanY * ny < 0) { tanX = -tanX; tanY = -tanY; }
+                let cueEnd = clipLineToTable(
+                    hit.x, hit.y,
+                    hit.x + tanX * AIM_PREDICT_CUE_LEN,
+                    hit.y + tanY * AIM_PREDICT_CUE_LEN
+                );
+                x.save();
+                x.setLineDash([6, 5]);
+                x.lineWidth = 2;
+                x.strokeStyle = "rgba(255,180,120,.9)";
+                x.shadowColor = "#ffb478";
+                x.shadowBlur = 8;
+                x.beginPath();
+                x.moveTo(hit.x, hit.y);
+                x.lineTo(cueEnd.x, cueEnd.y);
+                x.stroke();
+                x.restore();
+
+                // Impact point marker (pulsing dot)
+                let pulse2 = Math.sin(Date.now() * .01) * 2 + 6;
+                x.save();
+                x.fillStyle = "rgba(255,211,77,.95)";
+                x.shadowColor = "#ffd34d";
+                x.shadowBlur = 14;
+                x.beginPath();
+                x.arc(hit.x, hit.y, pulse2, 0, Math.PI * 2);
+                x.fill();
+                x.restore();
+            } else {
+                // No hit — draw a fading gradient on the aim line
+                let grad = x.createLinearGradient(q.x, q.y, leX, leY);
+                grad.addColorStop(0, "rgba(255,255,255,.9)");
+                grad.addColorStop(1, "rgba(255,255,255,0)");
+                x.save();
+                x.setLineDash([10, 7]);
+                x.lineWidth = 2.5;
+                x.strokeStyle = grad;
+                x.beginPath();
+                x.moveTo(q.x, q.y);
+                x.lineTo(leX, leY);
+                x.stroke();
+                x.restore();
+            }
+        }
+
+        function drawCueStick() {
+            if (!aim || ballInHand || gameOver || simulating) return;
+            let q = balls[0];
+            let dx = q.x - mouse.x, dy = q.y - mouse.y, d = Math.hypot(dx, dy);
+            if (d < 4) return;
+            let nx = dx / d, ny = dy / d;
+            let norm = Math.min(d / 300, 1);
+            let pullBack = 30 + norm * 160;
+            let cx1 = q.x - nx * pullBack, cy1 = q.y - ny * pullBack;
+            let cx2 = q.x - nx * (pullBack + 200), cy2 = q.y - ny * (pullBack + 200);
+
+            x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 8;
+            x.beginPath(); x.moveTo(cx1 + 2, cy1 + 2); x.lineTo(cx2 + 2, cy2 + 2); x.stroke();
+
+            let cg = x.createLinearGradient(cx1, cy1, cx2, cy2);
+            if (equippedCue === "gold") { cg.addColorStop(0, "#ffe066"); cg.addColorStop(.15, "#ffd34d"); cg.addColorStop(.85, "#c49a3c"); cg.addColorStop(1, "#8a6a1c"); }
+            else if (equippedCue === "neon") { cg.addColorStop(0, "#00ffcc"); cg.addColorStop(.3, "#0088ff"); cg.addColorStop(.7, "#ff00cc"); cg.addColorStop(1, "#800060"); }
+            else if (equippedCue === "carbon") { cg.addColorStop(0, "#444"); cg.addColorStop(.15, "#222"); cg.addColorStop(.85, "#111"); cg.addColorStop(1, "#000"); }
+            else if (equippedCue === "diamond") { cg.addColorStop(0, "#fff"); cg.addColorStop(.2, "#aaddff"); cg.addColorStop(.8, "#88bbff"); cg.addColorStop(1, "#5588cc"); }
+            else { cg.addColorStop(0, "#d4a030"); cg.addColorStop(.15, "#c49a3c"); cg.addColorStop(.85, "#5a3a1a"); cg.addColorStop(1, "#3a2010"); }
+            x.strokeStyle = cg; x.lineWidth = 6;
+            x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx2, cy2); x.stroke();
+
+            x.strokeStyle = "#f0f0f0"; x.lineWidth = 6;
+            x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx * 8, cy1 - ny * 8); x.stroke();
+        }
+
+        /* PARTICLES */
+        function addPocketParticles() {
+            for (let i = 0; i < 15; i++) {
+                let p = pockets[Math.floor(Math.random() * pockets.length)];
+                particles.push({ x: p.x, y: p.y, vx: (Math.random() - .5) * 60, vy: (Math.random() - .5) * 60, life: 1, size: Math.random() * 4 + 2, color: Math.random() > .5 ? "#ffd34d" : "#fff" });
+            }
+        }
+        function addWinParticles() {
+            for (let i = 0; i < 80; i++) particles.push({ x: W / 2, y: H / 2, vx: Math.random() * 100 - 50, vy: Math.random() * 100 - 50, life: 1, size: Math.random() * 8 + 3, color: colors[Math.floor(Math.random() * 15)] });
+        }
+        function updateParticles(dt) {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx * dt; p.y += p.vy * dt;
+                p.vx *= 0.94; p.vy *= 0.94;
+                p.life -= 1.5 * dt;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+        }
+        function drawParticles() {
+            for (let p of particles) {
+                x.globalAlpha = Math.max(0, p.life);
+                x.fillStyle = p.color;
+                x.beginPath(); x.arc(p.x, p.y, p.size, 0, Math.PI * 2); x.fill();
+            }
+            x.globalAlpha = 1;
+        }
+        function updatePower() {
+            if (aim && !ballInHand) {
+                let q = balls[0];
+                let d = Math.hypot(q.x - mouse.x, q.y - mouse.y);
+                powerLevel = Math.min(d / 300 * 100, 100);
+                document.getElementById("powerBar").style.width = powerLevel + "%";
+                document.getElementById("powerText").textContent = `⚡ Power: ${Math.round(powerLevel)}%`;
+            } else {
+                powerLevel = 0;
+                document.getElementById("powerBar").style.width = "0%";
+                document.getElementById("powerText").textContent = "⚡ Power: 0%";
+            }
+        }
+        function draw() {
+            x.clearRect(0, 0, W, H);
+            let rg = x.createLinearGradient(0, 0, 0, H);
+            rg.addColorStop(0, theme.rail1); rg.addColorStop(.5, theme.rail3); rg.addColorStop(1, theme.rail1);
+            x.fillStyle = rg; x.fillRect(0, 0, W, H);
+            let tg = x.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, 400);
+            tg.addColorStop(0, theme.felt0); tg.addColorStop(1, theme.felt2);
+            x.fillStyle = tg; x.fillRect(rail, rail, W - rail * 2, H - rail * 2);
+
+            if (isBreak || ballInHandKitchen) {
+                x.save(); x.strokeStyle = "rgba(255,255,255,.25)"; x.setLineDash([8, 6]); x.lineWidth = 2;
+                x.beginPath(); x.moveTo(HEAD_STRING_X, rail + 4); x.lineTo(HEAD_STRING_X, H - rail - 4); x.stroke();
+                x.restore();
+            }
+
+            for (let pi = 0; pi < pockets.length; pi++) {
+                let p = pockets[pi];
+                let sg = x.createRadialGradient(p.x, p.y, 3, p.x, p.y, 28);
+                sg.addColorStop(0, "#000"); sg.addColorStop(1, "#1a1a1a");
+                x.beginPath(); x.arc(p.x, p.y, 28, 0, Math.PI * 2);
+                x.fillStyle = sg; x.fill();
+            }
+
+            for (let b of balls) {
+                if (!b.active) continue;
+                x.beginPath(); x.ellipse(b.x + 2, b.y + 3, R + 1, R * .7, 0, 0, Math.PI * 2);
+                x.fillStyle = "rgba(0,0,0,.4)"; x.fill();
+
+                let bg = x.createRadialGradient(b.x - R * .35, b.y - R * .4, R * .05, b.x, b.y, R);
+                bg.addColorStop(0, "rgba(255,255,255,.85)");
+                bg.addColorStop(.15, b.c);
+                bg.addColorStop(1, darkenColor(b.c));
+                x.beginPath(); x.arc(b.x, b.y, R, 0, Math.PI * 2);
+                x.fillStyle = bg; x.fill();
+
+                if (b.num) {
+                    x.beginPath(); x.arc(b.x, b.y, 5.5, 0, Math.PI * 2);
+                    x.fillStyle = "rgba(255,255,255,.95)"; x.fill();
+                    x.fillStyle = "#111"; x.font = "bold 6px Arial";
+                    x.textAlign = "center"; x.textBaseline = "middle";
+                    x.fillText(b.num, b.x, b.y);
+                }
+            }
+
+            // ===== FULL AIM ASSIST =====
+            if (aimAssist) drawAimAssist();
+            drawCueStick();
+
+            if (ballInHand && !gameOver && !simulating) {
+                let q = balls[0];
+                let pulse = Math.sin(Date.now() * .006) * 3;
+                x.beginPath(); x.arc(q.x, q.y, 24 + pulse, 0, Math.PI * 2);
+                x.strokeStyle = "#ffd34d"; x.lineWidth = 3; x.stroke();
+            }
+
+            drawParticles();
+            updateParticles(1 / 60);
+            updatePower();
+        }
+        function loop() {
+            if (gameOver && currentContext !== "puzzle") return;
+            draw();
+            raf = requestAnimationFrame(loop);
+        }
+
+        /* FINISH SHOT */
+        function finishShot() {
+            let ev = shotEvents;
+            let pocketed = ev.pocketedThisShot.slice();
+            sessionStats.totalShots++;
+            sessionStats.totalPots += pocketed.length;
+            if (sessionStats.totalShots >= 50) unlockAchievement("shot_50");
+
+            if (currentContext === "puzzle" && currentPuzzle) {
+                puzzleShotsUsed++;
+                let rem = balls.filter(b => b.active && b.num !== 0).length;
+                if (rem === 0) {
+                    let stars = puzzleShotsUsed <= 1 ? 3 : puzzleShotsUsed <= 2 ? 2 : 1;
+                    awardCoins(stars * 100, W / 2, H / 2);
+                    showToast(`🎉 Complete! +${stars * 100}💰`, "gold");
+                    playWinSound();
+                    currentContext = "quick"; currentPuzzle = null;
+                    setTimeout(() => reset(), 1500);
+                    return;
+                }
+                if (puzzleShotsUsed >= currentPuzzle.maxShots) {
+                    showToast(`❌ Out of shots!`, "red"); playLoseSound();
+                    setTimeout(() => reset(), 1500); return;
+                }
+                update(); raf = requestAnimationFrame(loop); return;
+            }
+
+            let foul = null;
+            if (ev.cueScratched) foul = "Cue ball scratched";
+            else if (!ev.anyContact) foul = "No ball contacted";
+            else if (!isBreak && ev.firstHit !== null) {
+                let fg = groupOf(ev.firstHit), pg = groups[turn];
+                if (pg !== "open") {
+                    if (onEightBall(turn)) { if (fg !== "eight") foul = "Must hit 8-ball first"; }
+                    else if (fg !== pg) foul = `Must hit ${pg} first`;
+                }
+            }
+            else if (!isBreak && !ev.railAfterContact && pocketed.length === 0) foul = "No rail after contact";
+            if (isBreak && !foul) {
+                if (!ev.brokeRack) foul = "Cue never hit rack";
+                else if (!ev.railAfterContact && pocketed.length === 0) foul = "Illegal break";
+            }
+
+            if (pocketed.includes(8)) { handleEight(pocketed, foul); return; }
+            if (foul) { applyFoul(foul, pocketed); return; }
+
+            let own = 0, opp = 0;
+            for (let num of pocketed) {
+                let g = groupOf(num);
+                if (isBreak || groups[turn] === "open") {
+                    if ((g === "solids" || g === "stripes") && groups[turn] === "open") assignGroups(turn, g);
+                } else {
+                    if (g === groups[turn]) own++;
+                    else if (g === "solids" || g === "stripes") opp++;
+                }
+            }
+
+            if (isBreak) {
+                isBreak = false;
+                if (pocketed.length > 0) {
+                    unlockAchievement("break_pot");
+                    scores[turn] += pocketed.length * 10;
+                    awardCoins(pocketed.length * 10, W / 2, H / 2);
+                    setMessage(`🎱 Break! ${pocketed.length} pocketed. Table OPEN.`, true, "success");
+                    update(); raf = requestAnimationFrame(loop); return;
+                } else { setMessage("🎱 Break! No balls pocketed.", false); switchTurn(); raf = requestAnimationFrame(loop); return; }
+            }
+
+            if (own > 0 || pocketed.length > 0) {
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                if (combo > sessionStats.longestCombo) sessionStats.longestCombo = combo;
+                if (combo >= 3) unlockAchievement("combo_3");
+                if (combo >= 5) unlockAchievement("combo_5");
+                scores[turn] += own * 10;
+                scores[1 - turn] += opp * 10;
+                if (combo > 1) awardCoins(combo * 5, W / 2, H / 2);
+                let txt = `✅ P${turn + 1} pocketed ${own}`;
+                if (combo > 1) txt += ` · Combo x${combo}! (+${combo * 5}💰)`;
+                setMessage(txt, true, "success");
+                update(); raf = requestAnimationFrame(loop); return;
+            }
+
+            combo = 0;
+            setMessage("❌ No ball pocketed — turn passes.");
+            switchTurn();
+            raf = requestAnimationFrame(loop);
+        }
+        function assignGroups(p, g) {
+            groups[p] = g; groups[1 - p] = g === "solids" ? "stripes" : "solids";
+            updateGroupBadge(1, groups[0]); updateGroupBadge(2, groups[1]);
+            showToast(`P${p + 1} takes ${g.toUpperCase()}`, "green");
+        }
+        function handleEight(pocketed, existingFoul) {
+            if (!onEightBall(turn)) { loseGame(turn, "Pocketed 8-ball too early"); return; }
+            let wrong = false;
+            if (calledPocket !== null && shotEvents.eightBallPocket !== undefined && shotEvents.eightBallPocket !== calledPocket) wrong = true;
+            if (existingFoul) { loseGame(turn, "Fouled on 8-ball"); return; }
+            if (wrong) { loseGame(turn, "8-ball in wrong pocket"); return; }
+            winGame(turn);
+        }
+        function applyFoul(reason, pocketed) {
+            fouls[turn]++;
+            let offender = turn;
+            let kitchen = isBreak && shotEvents.cueScratched;
+            isBreak = false;
+            turn = 1 - turn;
+            ballInHand = true; ballInHandKitchen = kitchen;
+            let cue = balls.find(b => b.num === 0);
+            if (cue) {
+                cue.active = true; cue.vx = cue.vy = cue.spin = 0;
+                cue.x = kitchen ? 150 : 245; cue.y = 250;
+            }
+            setMessage(`⚠️ FOUL — ${reason}`, true, "foul");
+            playFoulSound();
+            shotHistory.push({ player: offender + 1, pocketed: pocketed.length, foul: true });
+            updateHistory(); update();
+            raf = requestAnimationFrame(loop);
+        }
+        function winGame(p) {
+            gameOver = true;
+            sessionStats.winStreak = (sessionStats.winStreak || 0) + 1;
+            if (sessionStats.winStreak >= 3) unlockAchievement("streak_3");
+            if (sessionStats.winStreak >= 5) unlockAchievement("streak_5");
+            unlockAchievement("first_win"); unlockAchievement("eight_ball");
+            if (currentDifficulty === "hard") unlockAchievement("beat_hard");
+            if (currentDifficulty === "pro") unlockAchievement("beat_pro");
+
+            let reward = 50;
+            if (currentDifficulty === "hard") reward = 75;
+            if (currentDifficulty === "pro") reward = 150;
+            if (mode === "vs") reward = 30;
+            awardCoins(reward, W / 2, H / 2);
+            if (fouls[p] === 0 && mode === "ai") unlockAchievement("no_foul");
+
+            document.getElementById("trophyIcon").textContent = "🏆";
+            document.getElementById("winner").textContent = `Player ${p + 1} Wins!`;
+            document.getElementById("final").textContent = `P1 ${scores[0]} — P2 ${scores[1]}  · +💰${reward}`;
+            document.getElementById("sessionRecap").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+      <div style="background:rgba(255,211,77,.05);border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#8a99a8">SHOTS</div><div style="color:#ffd34d;font-weight:800;font-size:18px">${shotCount}</div></div>
+      <div style="background:rgba(255,211,77,.05);border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#8a99a8">BEST COMBO</div><div style="color:#ffd34d;font-weight:800;font-size:18px">x${maxCombo}</div></div>
+    </div>`;
+            document.getElementById("winCoins").textContent = coinBalance;
+            overlay.classList.add("show");
+            addWinParticles(); playWinSound();
+
+            if (currentContext === "tournament") {
+                if (p === 0) {
+                    tournamentPlayerWins++;
+                    let prizes = [0, 500, 1500, 5000];
+                    let prize = prizes[Math.min(tournamentPlayerWins, 3)];
+                    if (prize > 0) awardCoins(prize, W / 2, H / 2);
+                }
+                setTimeout(() => { overlay.classList.remove("show"); advanceTournament(p === 0); setTimeout(() => openTournament(), 500); }, 2500);
+            }
+        }
+        function loseGame(loser, reason) {
+            gameOver = true;
+            sessionStats.winStreak = 0; saveAll();
+            document.getElementById("trophyIcon").textContent = "💀";
+            document.getElementById("winner").textContent = `Player ${2 - loser} Wins!`;
+            document.getElementById("final").textContent = `P${loser + 1} lost: ${reason}`;
+            document.getElementById("sessionRecap").innerHTML = "";
+            document.getElementById("winCoins").textContent = coinBalance;
+            overlay.classList.add("show");
+            addWinParticles(); playLoseSound();
+            if (currentContext === "tournament") {
+                setTimeout(() => { overlay.classList.remove("show"); advanceTournament(false); setTimeout(() => openTournament(), 500); }, 2500);
+            }
+        }
+        function switchTurn() {
+            turn = 1 - turn;
+            ballInHand = false; ballInHandKitchen = false; calledPocket = null;
+            update();
+        }
+
+        /* INPUT */
+        function handleDown(p) {
+            if (gameOver || aiThinking || simulating) return;
+            let cue = balls[0];
+            if (ballInHand) {
+                let valid = true;
+                if (ballInHandKitchen && p.x > HEAD_STRING_X) valid = false;
+                for (let b of balls) {
+                    if (b.num === 0 || !b.active) continue;
+                    if (Math.hypot(p.x - b.x, p.y - b.y) < R * 2 + 2) { valid = false; break; }
+                }
+                if (!valid) { showToast("❌ Invalid", "red"); return; }
+                cue.x = Math.max(rail + R, Math.min(W - rail - R, p.x));
+                cue.y = Math.max(rail + R, Math.min(H - rail - R, p.y));
+                cue.vx = cue.vy = cue.spin = 0; cue.active = true;
+                saveState();
+                ballInHand = false; ballInHandKitchen = false;
+                setMessage("🎯 Placed. Drag to shoot.", true, "success");
+                update(); return;
+            }
+            if (onEightBall(turn) && currentContext !== "puzzle") {
+                for (let pi = 0; pi < pockets.length; pi++) {
+                    let pk = pockets[pi];
+                    if (Math.hypot(p.x - pk.x, p.y - pk.y) < 35) {
+                        calledPocket = pi; showToast(`📍 ${pk.name}`, "gold"); update(); return;
+                    }
+                }
+            }
+            aim = true; mouse = p;
+        }
+        function handleMove(p) { mouse = p; }
+        function handleUp(p) {
+            if (ballInHand && !gameOver && !aiThinking && !simulating) return;
+            if (!aim || aiThinking || simulating) return;
+            aim = false;
+            let q = balls[0];
+            let dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy);
+            if (d < 8) { updatePower(); return; }
+            if (onEightBall(turn) && calledPocket === null && currentContext !== "puzzle") {
+                showToast("📍 Call a pocket first!", "red"); updatePower(); return;
+            }
+            let norm = Math.min(d / 300, 1);
+            let cue = getCue();
+            let speed = norm * MAX_BALL_SPEED * cue.powerMult;
+            if (speed > MAX_BALL_SPEED * 1.2) speed = MAX_BALL_SPEED * 1.2;
+
+            let nx = dx / d, ny = dy / d;
+            q.vx = nx * speed; q.vy = ny * speed;
+            q.spin = +spinEl.value * norm * 5 * cue.spinMult;
+
+            setMessage(`⚡ ${Math.round(norm * 100)}% power`);
+            saveState(); shotCount++;
+            startSimulation();
+            update();
+        }
+
+        c.addEventListener("pointerdown", e => { e.preventDefault(); handleDown(pos(e)); });
+        c.addEventListener("pointermove", e => handleMove(pos(e)));
+        c.addEventListener("pointerup", e => handleUp(pos(e)));
+        c.addEventListener("pointercancel", () => { aim = false; updatePower(); });
+        c.addEventListener("contextmenu", e => e.preventDefault());
+        c.addEventListener("touchstart", e => { if (e.touches.length > 1) return; e.preventDefault(); handleDown(pos(e.touches[0])); }, { passive: false });
+        c.addEventListener("touchmove", e => { e.preventDefault(); if (e.touches.length > 0) handleMove(pos(e.touches[0])); }, { passive: false });
+        c.addEventListener("touchend", e => { e.preventDefault(); if (e.changedTouches.length > 0) handleUp(pos(e.changedTouches[0])); }, { passive: false });
+
+        function saveState() {
+            undoStack.push({
+                balls: balls.map(b => ({ ...b })),
+                turn, score: [...scores], foul: [...fouls], shotCount, ballInHand, combo,
+                groups: [...groups], isBreak, calledPocket, ballInHandKitchen
+            });
+            if (undoStack.length > 40) undoStack.shift();
+        }
+        function undo() {
+            if (!undoStack.length) { showToast("⚠️ Nothing to undo"); return; }
+            let s = undoStack.pop();
+            if (s === null) { showToast("⚠️ Cannot undo"); return; }
+            cancelAnimationFrame(raf); simulating = false;
+            balls = s.balls; turn = s.turn; scores = [...s.score]; fouls = [...s.foul];
+            shotCount = s.shotCount; ballInHand = s.ballInHand; combo = s.combo || 0;
+            groups = [...s.groups]; isBreak = s.isBreak;
+            calledPocket = s.calledPocket; ballInHandKitchen = s.ballInHandKitchen || false;
+            if (shotHistory.length) shotHistory.pop();
+            particles = []; aim = false; gameOver = false;
+            setMessage("↩ Undone!");
+            update(); updateHistory();
+            raf = requestAnimationFrame(loop);
+        }
+
+        /* AI */
+        function aiThink() {
+            aiThinking = true;
+            setMessage(`🤖 ${AI_LEVELS[currentDifficulty].name} AI...`);
+            setTimeout(() => { aiShot(); aiThinking = false; }, 600);
+        }
+        function aiShot() {
+            let cue = balls.find(b => b.num === 0 && b.active);
+            if (!cue) return;
+            let lvl = AI_LEVELS[currentDifficulty];
+            let target = null, minD = Infinity;
+            for (let b of balls) {
+                if (!b.active || b.num === 0) continue;
+                let legal = isBreak ? true : (groups[turn] === "open" ? b.num !== 8 : (onEightBall(turn) ? b.num === 8 : groupOf(b.num) === groups[turn]));
+                if (!legal) continue;
+                let d = Math.hypot(b.x - cue.x, b.y - cue.y);
+                if (d < minD) { minD = d; target = b; }
+            }
+            if (!target) target = balls.find(b => b.active && b.num !== 0);
+            if (!target) return;
+
+            let dx = cue.x - target.x, dy = cue.y - target.y, d = Math.hypot(dx, dy) || 1;
+            let nx = dx / d, ny = dy / d;
+            let angErr = (Math.random() - 0.5) * lvl.error * 2;
+            let cosA = Math.cos(angErr), sinA = Math.sin(angErr);
+            let rnx = nx * cosA - ny * sinA;
+            let rny = nx * sinA + ny * cosA;
+            cue.vx = rnx * lvl.power; cue.vy = rny * lvl.power;
+            cue.spin = 0;
+            if (onEightBall(turn) && calledPocket === null) {
+                let bp = 0, bd = Infinity;
+                for (let pi = 0; pi < pockets.length; pi++) {
+                    let dd = Math.hypot(pockets[pi].x - target.x, pockets[pi].y - target.y);
+                    if (dd < bd) { bd = dd; bp = pi; }
+                }
+                calledPocket = bp;
+            }
+            ballInHand = false; ballInHandKitchen = false;
+            saveState();
+            startSimulation();
+            update();
+        }
+
+        /* TOURNAMENT */
         function generateTournamentBracket() {
             let names = ["Alex", "Jordan", "Sam", "Riley", "Casey", "Morgan", "Taylor", "Quinn"];
             let diffs = ["easy", "medium", "medium", "hard", "hard", "pro", "pro", "pro"];
@@ -2098,8 +2857,9 @@
             } else if (round === 2) {
                 b.champion = b.final[0][b.final[0].winner]; tournamentActive = false;
                 if (b.champion.isPlayer) {
-                    tournamentPrize = [0, 500, 1500, 5000][Math.min(tournamentPlayerWins + 1, 3)];
-                    coinBalance += tournamentPrize; unlockAchievement("tournament_win");
+                    tournamentPrize = 5000;
+                    awardCoins(tournamentPrize, W / 2, H / 2);
+                    unlockAchievement("tournament_win");
                     showToast(`🏆 CHAMPION! +💰${tournamentPrize}`, "gold");
                 }
             }
@@ -2110,963 +2870,53 @@
             renderBracket(); document.getElementById("tournamentOverlay").classList.add("show");
         }
 
-        const spinEl = document.getElementById("spin");
-        const msg = document.getElementById("message");
-        const overlay = document.getElementById("overlay");
-        const toast = document.getElementById("toast");
-
-        let toastTimer = null;
-        function showToast(text, type = "") {
-            toast.textContent = text; toast.className = "toast show" + (type ? " " + type : "");
-            clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.className = "toast", 2200);
-        }
-        function resizeCanvas() {
-            if (fullViewActive) { resizeCanvasFullView(); return; }
-            let wrap = c.parentElement;
-            let w = wrap.clientWidth - (window.innerWidth < 640 ? 12 : 24);
-            let ratio = W / H;
-            let maxH = window.innerHeight - (window.innerWidth < 1000 ? 300 : 220);
-            let h = Math.min(w / ratio, Math.max(maxH, 180));
-            if (h < 180) h = 180;
-            w = h * ratio;
-            c.width = W; c.height = H;
-            c.style.width = w + "px"; c.style.height = h + "px";
-        }
-        function resizeCanvasFullView() {
-            let vw = window.innerWidth, vh = window.innerHeight, ratio = W / H;
-            let w, h;
-            if (vw / vh > ratio) { h = vh; w = h * ratio; } else { w = vw; h = w / ratio; }
-            c.width = W; c.height = H;
-            c.style.width = w + "px"; c.style.height = h + "px";
-        }
-        function update() {
-            document.getElementById("p1").textContent = scores[0];
-            document.getElementById("p2").textContent = scores[1];
-            document.getElementById("turn").textContent = "Player " + (turn + 1) + "'s Turn";
-            document.getElementById("shots").textContent = shotCount;
-            document.getElementById("fouls").textContent = `P1: ${fouls[0]} | P2: ${fouls[1]}`;
-            let sv = +spinEl.value;
-            document.getElementById("spinText").textContent = sv > .05 ? "Topspin ⚡" : sv < -.05 ? "Backspin ⚡" : "Center ⚙️";
-            let badge = document.getElementById("modeBadge");
-            if (currentContext === "tournament") { badge.textContent = "🏆 TOURNEY"; badge.className = "mode-badge badge-tourney"; }
-            else if (currentContext === "puzzle") { badge.textContent = "🎯 PUZZLE"; badge.className = "mode-badge badge-vs"; }
-            else { badge.textContent = mode === "ai" ? "🤖 AI" : "👥 VS"; badge.className = "mode-badge " + (mode === "ai" ? "badge-ai" : "badge-vs"); }
-            document.getElementById("card1").classList.toggle("active", turn === 0 && !gameOver);
-            document.getElementById("card2").classList.toggle("active", turn === 1 && !gameOver);
-            updateGroupBadge(1, groups[0]); updateGroupBadge(2, groups[1]);
-            document.getElementById("statShots").textContent = sessionStats.totalShots;
-            document.getElementById("statPots").textContent = sessionStats.totalPots;
-            document.getElementById("statStreak").textContent = "🔥 " + sessionStats.winStreak;
-            document.getElementById("winStreak").textContent = sessionStats.winStreak;
-            document.getElementById("cueName").textContent = getCue().name;
-            let fvS = document.getElementById("fvShots"), fvP = document.getElementById("fvPots"), fvT = document.getElementById("fvTurn");
-            if (fvS) fvS.textContent = shotCount;
-            if (fvP) fvP.textContent = sessionStats.totalPots;
-            if (fvT) { fvT.textContent = "P" + (turn + 1); fvT.style.background = turn === 0 ? "rgba(255,211,77,.15)" : "rgba(68,170,255,.15)"; fvT.style.color = turn === 0 ? "#ffd34d" : "#44aaff"; }
-            if (ballInHand && !gameOver && !simulating) {
-                let hint = ballInHandKitchen
-                    ? `🖐️ <span class="ball-in-hand-indicator">BALL IN HAND</span> — place behind head string.`
-                    : `🖐️ <span class="ball-in-hand-indicator">BALL IN HAND</span> — tap anywhere to place cue ball.`;
-                setMessage(hint, false);
-            }
-        }
-        function setMessage(text, flash = true, type = "") {
-            msg.innerHTML = text;
-            msg.classList.remove("foul", "success");
-            if (type) msg.classList.add(type);
-            if (flash) { msg.classList.remove("flash"); void msg.offsetWidth; msg.classList.add("flash"); }
-        }
-        function updateGroupBadge(pn, group) {
-            let el = document.getElementById("group" + pn);
-            el.className = "group-badge " + group;
-            if (group === "solids") el.textContent = "SOLIDS 1-7";
-            else if (group === "stripes") el.textContent = "STRIPES 9-15";
-            else el.textContent = "OPEN";
-        }
-        function onEightBall(player) { if (groups[player] === "open") return false; return countRemainingInGroup(groups[player]) === 0; }
-        function countRemainingInGroup(group) {
-            if (group === "solids") return balls.filter(b => b.active && b.num >= 1 && b.num <= 7).length;
-            if (group === "stripes") return balls.filter(b => b.active && b.num >= 9 && b.num <= 15).length;
-            return 0;
-        }
-        function groupOf(num) {
-            if (num >= 1 && num <= 7) return "solids";
-            if (num >= 9 && num <= 15) return "stripes";
-            if (num === 8) return "eight";
-            return "cue";
-        }
-
-        function enterFullView() {
-            fullViewActive = true;
-            document.body.classList.add("fullview");
-            document.getElementById("navFullview").classList.add("fullview-active");
-            document.getElementById("fvSpin").value = spinEl.value;
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => { });
-            setTimeout(() => { resizeCanvasFullView(); draw(); }, 100);
-            showToast("⛶ Full View Mode", "gold");
-        }
-        function exitFullView() {
-            fullViewActive = false;
-            document.body.classList.remove("fullview");
-            document.getElementById("navFullview").classList.remove("fullview-active");
-            if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen().catch(() => { });
-            setTimeout(() => { resizeCanvas(); draw(); }, 100);
-            showToast("Exited Full View", "gold");
-        }
-        function toggleFullView() { if (fullViewActive) exitFullView(); else enterFullView(); }
-
-        function reset() {
-            cancelAnimationFrame(raf);
-            balls = []; scores = [0, 0]; fouls = [0, 0]; turn = 0;
-            gameOver = false; ballInHand = false; simulating = false;
-            particles = []; ballTrails = []; ghostTrails = []; undoStack = [];
-            shotCount = 0; combo = 0; maxCombo = 0;
-            groups = ["open", "open"]; isBreak = true; calledPocket = null;
-            ballInHandKitchen = false; resetShotEvents();
-            aim = false; pocketsHighlight = [];
-            resizeCanvas(); applyThemeToDOM();
-            if (currentContext === "puzzle" && currentPuzzle) {
-                currentPuzzle.setup(); puzzleShotsUsed = 0;
-                setMessage(`🎯 ${currentPuzzle.name} — ${currentPuzzle.desc}`, true, "success");
-                update(); loop(); return;
-            }
-            balls.push(makeBall(245, 250, "#f7f7f2", 0));
-            let rackOrder = [1, 2, 9, 3, 8, 10, 4, 14, 11, 5, 6, 12, 13, 7, 15];
-            let sx = 650, sep = 25.2, bi = 0;
-            for (let row = 0; row < 5; row++)
-                for (let col = 0; col <= row; col++) {
-                    let num = rackOrder[bi++];
-                    balls.push(makeBall(sx + row * 21.7, 250 + (col - row / 2) * sep, colors[num], num));
-                }
-            setMessage(currentContext === "tournament" ? "🏆 Tournament — Break the rack!" : "🎱 Drag BACKWARD from cue ball to shoot!");
-            update(); updateHistory(); loop();
-        }
-        function newShotEvents() {
-            return { firstHit: null, pocketedThisShot: [], cueScratched: false, railAfterContact: false, anyContact: false, brokeRack: false, eightBallPocket: undefined };
-        }
-        function resetShotEvents() { shotEvents = newShotEvents(); }
-        function updateHistory() {
-            let el = document.getElementById("history");
-            if (!el) return;
-            if (!shotHistory.length) { el.innerHTML = ""; return; }
-            el.innerHTML = shotHistory.slice(-8).map(s => {
-                let p = s.player === 1 ? "P1" : "P2";
-                let c2 = s.foul ? "#e74c3c" : (s.pocketed > 0 ? "#2ecc71" : "#8a99a8");
-                let l = s.foul ? "foul" : `${s.pocketed} pocketed`;
-                return `<div><span>${p} shot</span><span style="color:${c2}">${l}</span></div>`;
+        /* PUZZLES */
+        const PUZZLES = [
+            {
+                id: "p1", name: "Straight In", maxShots: 1, stars: 0, desc: "Pocket the 8-ball in 1 shot.",
+                setup: () => { balls = [makeBall(300, 250, "#f7f7f2", 0), makeBall(600, 250, "#111", 8)]; }
+            },
+            {
+                id: "p2", name: "Corner Pocket", maxShots: 1, stars: 0, desc: "Pocket the 8 in top-right.",
+                setup: () => { balls = [makeBall(400, 300, "#f7f7f2", 0), makeBall(700, 200, "#111", 8)]; }
+            },
+            {
+                id: "p3", name: "Bank Shot", maxShots: 1, stars: 0, desc: "Bank off the rail to sink the 8.",
+                setup: () => { balls = [makeBall(200, 400, "#f7f7f2", 0), makeBall(400, 150, "#111", 8)]; }
+            },
+        ];
+        let currentPuzzle = null;
+        let puzzleShotsUsed = 0;
+        function renderPuzzles() {
+            let grid = document.getElementById("puzzleGrid");
+            grid.innerHTML = PUZZLES.map((p, i) => {
+                let unlocked = i === 0 || PUZZLES[i - 1].stars > 0;
+                let stars = "★".repeat(p.stars) + "☆".repeat(3 - p.stars);
+                return `<div class="puzzle-card ${unlocked ? '' : 'locked'}" data-puzzle="${p.id}">
+      <div class="puzzle-info"><div class="puzzle-name">${unlocked ? p.name : '🔒 ' + p.name}</div>
+      <div class="puzzle-desc">${p.desc}</div></div>
+      <div class="stars">${stars}</div></div>`;
             }).join('');
-        }
-
-        /* =========================================================
-           MAIN SIMULATION LOOP (with fixed timestep + sub-stepping)
-           ========================================================= */
-        let accumulator = 0;
-        function startSimulation() {
-            cancelAnimationFrame(raf);
-            aim = false;
-            simulating = true;
-            lastFrameTime = performance.now();
-            accumulator = 0;
-            resetShotEvents();
-            setMessage(`🎯 Player ${turn + 1} shooting...`);
-            simulateStep();
-        }
-        function simulateStep() {
-            let now = performance.now();
-            let frameTime = (now - lastFrameTime) / 1000;   // seconds
-            lastFrameTime = now;
-
-            // Cap frame time to avoid huge jumps
-            if (frameTime > 0.1) frameTime = 0.1;
-
-            accumulator += frameTime;
-
-            // Fixed-timestep physics (120 Hz)
-            let steps = 0;
-            while (accumulator >= PHYS_DT && steps < MAX_SUBSTEPS) {
-                physicsStep(PHYS_DT);
-                accumulator -= PHYS_DT;
-                steps++;
-            }
-
-            draw();
-
-            // Check if all balls have stopped
-            let anyMoving = balls.some(b => b.active && (Math.abs(b.vx) > 0.5 || Math.abs(b.vy) > 0.5));
-            if (anyMoving) {
-                raf = requestAnimationFrame(simulateStep);
-            } else {
-                // Final settle: force stop tiny residuals
-                for (let b of balls) if (b.active) { b.vx = 0; b.vy = 0; }
-                simulating = false;
-                // Capture final state before finishing
-                finishShot();
-            }
-        }
-
-        /* =========================================================
-           PHYSICS STEP (fixed dt in seconds, realistic behavior)
-           ========================================================= */
-        function physicsStep(dt) {
-            let active = balls.filter(b => b.active);
-
-            // --- 1. Update positions and apply rolling friction ---
-            for (let b of active) {
-                // Move
-                b.x += b.vx * dt;
-                b.y += b.vy * dt;
-
-                // Rolling deceleration (applied to speed, not velocity components)
-                let speed = Math.hypot(b.vx, b.vy);
-                if (speed > 0) {
-                    let decel = ROLL_DECELERATION * dt;
-                    let newSpeed = Math.max(0, speed - decel);
-                    if (newSpeed < MIN_ROLL_SPEED) newSpeed = 0;
-                    let scale = speed > 0 ? newSpeed / speed : 0;
-                    b.vx *= scale;
-                    b.vy *= scale;
-                }
-
-                // Spin decay
-                b.spin *= Math.pow(SPIN_DECAY_RATE, dt);
-
-                // Spin curve effect (subtle sideways force)
-                if (Math.abs(b.spin) > 0.05 && speed > 5) {
-                    let perpX = -b.vy / speed;
-                    let perpY = b.vx / speed;
-                    b.vx += perpX * b.spin * SPIN_CURVE_FACTOR * dt * 20;
-                    b.vy += perpY * b.spin * SPIN_CURVE_FACTOR * dt * 20;
-                }
-
-                // Visual rotation
-                b.rot = (b.rot || 0) + speed * dt * 1.5;
-
-                // Trail effect
-                if (trailsEnabled && speed > 40) {
-                    ballTrails.push({ x: b.x, y: b.y, c: b.c, life: 1, r: R });
-                    if (ballTrails.length > 200) ballTrails.shift();
-                }
-
-                // --- 2. Pocket detection with suction ---
-                for (let pi = 0; pi < pockets.length; pi++) {
-                    let p = pockets[pi];
-                    let dx = p.x - b.x, dy = p.y - b.y;
-                    let dist = Math.hypot(dx, dy);
-
-                    // Suction: only pulls when very close to pocket
-                    if (dist < POCKET_SUCTION_RANGE && dist > POCKET_RADIUS) {
-                        let pull = POCKET_SUCTION_STRENGTH * dt;
-                        b.vx += (dx / dist) * pull;
-                        b.vy += (dy / dist) * pull;
-                    }
-
-                    if (dist < POCKET_RADIUS) {
-                        b.active = false; b.vx = b.vy = b.spin = 0;
-                        if (b.num === 0) shotEvents.cueScratched = true;
-                        else {
-                            shotEvents.pocketedThisShot.push(b.num);
-                            if (b.num === 8) shotEvents.eightBallPocket = pi;
-                            playPocketSound(); addPocketParticles(); unlockAchievement("first_pot");
-                        }
-                        break;
-                    }
-                }
-                if (!b.active) continue;
-
-                // --- 3. Cushion collisions (with restitution + tangential friction) ---
-                if (b.x < rail + R) {
-                    b.x = rail + R;
-                    // Reflect normal component with restitution
-                    b.vx = Math.abs(b.vx) * CUSHION_RESTITUTION;
-                    // Dampen tangential
-                    b.vy *= (1 - CUSHION_FRICTION * dt * 60);
-                    if (Math.abs(b.vx) > 30) { playHitSound(); addRailDust(rail, b.y); }
-                    if (shotEvents.anyContact) shotEvents.railAfterContact = true;
-                }
-                if (b.x > W - rail - R) {
-                    b.x = W - rail - R;
-                    b.vx = -Math.abs(b.vx) * CUSHION_RESTITUTION;
-                    b.vy *= (1 - CUSHION_FRICTION * dt * 60);
-                    if (Math.abs(b.vx) > 30) { playHitSound(); addRailDust(W - rail, b.y); }
-                    if (shotEvents.anyContact) shotEvents.railAfterContact = true;
-                }
-                if (b.y < rail + R) {
-                    b.y = rail + R;
-                    b.vy = Math.abs(b.vy) * CUSHION_RESTITUTION;
-                    b.vx *= (1 - CUSHION_FRICTION * dt * 60);
-                    if (Math.abs(b.vy) > 30) { playHitSound(); addRailDust(b.x, rail); }
-                    if (shotEvents.anyContact) shotEvents.railAfterContact = true;
-                }
-                if (b.y > H - rail - R) {
-                    b.y = H - rail - R;
-                    b.vy = -Math.abs(b.vy) * CUSHION_RESTITUTION;
-                    b.vx *= (1 - CUSHION_FRICTION * dt * 60);
-                    if (Math.abs(b.vy) > 30) { playHitSound(); addRailDust(b.x, H - rail); }
-                    if (shotEvents.anyContact) shotEvents.railAfterContact = true;
-                }
-            }
-
-            // --- 4. Ball-to-ball collisions (proper impulse response) ---
-            for (let i = 0; i < active.length; i++) {
-                for (let j = i + 1; j < active.length; j++) {
-                    let a = active[i], b = active[j];
-                    if (!a.active || !b.active) continue;
-                    let dx = b.x - a.x, dy = b.y - a.y;
-                    let d = Math.hypot(dx, dy);
-                    let minD = a.r + b.r;
-                    if (d === 0 || d >= minD) continue;
-
-                    // Register contact
-                    if ((a.num === 0 || b.num === 0) && !shotEvents.anyContact) {
-                        let other = a.num === 0 ? b : a;
-                        shotEvents.firstHit = other.num;
-                        shotEvents.anyContact = true;
-                        if (isBreak && other.num !== 0) shotEvents.brokeRack = true;
-                    }
-
-                    // Normal
-                    let nx = dx / d, ny = dy / d;
-
-                    // Separate overlapping
-                    let overlap = minD - d;
-                    a.x -= nx * overlap / 2;
-                    a.y -= ny * overlap / 2;
-                    b.x += nx * overlap / 2;
-                    b.y += ny * overlap / 2;
-
-                    // Relative velocity along normal
-                    let rvx = b.vx - a.vx, rvy = b.vy - a.vy;
-                    let velAlongNormal = rvx * nx + rvy * ny;
-
-                    // Only resolve if they're approaching
-                    if (velAlongNormal > 0) continue;
-
-                    // Impulse magnitude (equal mass)
-                    // j = -(1 + e) * velAlongNormal / 2
-                    let e = BALL_RESTITUTION;
-                    let impulse = -(1 + e) * velAlongNormal / 2;
-
-                    // Apply impulse
-                    a.vx -= impulse * nx;
-                    a.vy -= impulse * ny;
-                    b.vx += impulse * nx;
-                    b.vy += impulse * ny;
-
-                    // Impact feedback
-                    let impactSpeed = Math.abs(velAlongNormal);
-                    if (impactSpeed > 30) {
-                        playHitSound(Math.min(impactSpeed / 300, 1));
-                        addImpactSparks((a.x + b.x) / 2, (a.y + b.y) / 2, impactSpeed / 200);
-                    }
-                }
-            }
-        }
-
-        /* =========================================================
-           AIM ASSIST
-           ========================================================= */
-        function raycastToFirstBall(x0, y0, dx, dy, ignoreBall) {
-            let cx = x0, cy = y0;
-            for (let s = 0; s < AIM_RAY_STEPS; s++) {
-                cx += dx * AIM_RAY_STEP; cy += dy * AIM_RAY_STEP;
-                if (cx < rail + R) { cx = rail + R; dx = Math.abs(dx); }
-                else if (cx > W - rail - R) { cx = W - rail - R; dx = -Math.abs(dx); }
-                if (cy < rail + R) { cy = rail + R; dy = Math.abs(dy); }
-                else if (cy > H - rail - R) { cy = H - rail - R; dy = -Math.abs(dy); }
-                for (let b of balls) {
-                    if (!b.active || b === ignoreBall) continue;
-                    let ddx = cx - b.x, ddy = cy - b.y;
-                    if (Math.hypot(ddx, ddy) < R + R) {
-                        let nrm = Math.hypot(ddx, ddy) || 1;
-                        return { hit: true, x: b.x + ddx / nrm * R, y: b.y + ddy / nrm * R, ball: b, nx: ddx / nrm, ny: ddy / nrm };
-                    }
-                }
-                if (Math.hypot(cx - x0, cy - y0) > AIM_LINE_MAX_LEN) break;
-            }
-            return { hit: false, x: cx, y: cy };
-        }
-        function clipLineToTable(x0, y0, x1, y1) {
-            let dx = x1 - x0, dy = y1 - y0, t = 1;
-            let minX = rail + R, maxX = W - rail - R, minY = rail + R, maxY = H - rail - R;
-            if (x1 < minX) t = Math.min(t, (minX - x0) / (dx || 1));
-            if (x1 > maxX) t = Math.min(t, (maxX - x0) / (dx || 1));
-            if (y1 < minY) t = Math.min(t, (minY - y0) / (dy || 1));
-            if (y1 > maxY) t = Math.min(t, (maxY - y0) / (dy || 1));
-            if (t < 0) t = 0; if (t > 1) t = 1;
-            return { x: x0 + dx * t, y: y0 + dy * t };
-        }
-        function findAimedPocket(bx, by, dx, dy) {
-            let best = null, bestScore = Infinity;
-            for (let p of pockets) {
-                let toX = p.x - bx, toY = p.y - by, dist = Math.hypot(toX, toY);
-                if (dist < 1) continue;
-                let dot = (toX / dist) * dx + (toY / dist) * dy;
-                if (dot < 0.85) continue;
-                let score = dist * (2 - dot);
-                if (score < bestScore) { bestScore = score; best = { pocket: p, dist }; }
-            }
-            return best;
-        }
-        function drawAimAssist() {
-            if (!aim || ballInHand || gameOver || simulating) return;
-            let q = balls[0];
-            let dx = q.x - mouse.x, dy = q.y - mouse.y, d = Math.hypot(dx, dy);
-            if (d < 4) return;
-            let nx = dx / d, ny = dy / d;
-
-            let hit = raycastToFirstBall(q.x, q.y, nx, ny, q);
-            let leX = hit.hit ? hit.x : q.x + nx * AIM_LINE_MAX_LEN;
-            let leY = hit.hit ? hit.y : q.y + ny * AIM_LINE_MAX_LEN;
-
-            x.save();
-            x.setLineDash([10, 7]); x.lineWidth = 2.5;
-            x.strokeStyle = "rgba(255,255,255,.85)";
-            x.shadowColor = theme.aimColor; x.shadowBlur = 8;
-            x.beginPath(); x.moveTo(q.x, q.y); x.lineTo(leX, leY); x.stroke();
-            x.restore();
-
-            if (hit.hit && hit.ball) {
-                x.save();
-                x.setLineDash([4, 3]); x.strokeStyle = "rgba(255,255,255,.9)"; x.lineWidth = 2;
-                x.beginPath(); x.arc(hit.x, hit.y, R, 0, Math.PI * 2); x.stroke();
-                x.restore();
-
-                let obx = hit.ball.x - hit.x, oby = hit.ball.y - hit.y;
-                let obd = Math.hypot(obx, oby) || 1;
-                let objNx = obx / obd, objNy = oby / obd;
-                let objLine = clipLineToTable(hit.ball.x, hit.ball.y, hit.ball.x + objNx * 240, hit.ball.y + objNy * 240);
-                x.save();
-                x.lineWidth = 3; x.strokeStyle = "rgba(46,204,113,.95)";
-                x.shadowColor = "#2ecc71"; x.shadowBlur = 10;
-                x.beginPath(); x.moveTo(hit.ball.x, hit.ball.y); x.lineTo(objLine.x, objLine.y); x.stroke();
-                x.restore();
-
-                let aimed = findAimedPocket(hit.ball.x, hit.ball.y, objNx, objNy);
-                if (aimed) {
-                    let pulse = Math.sin(Date.now() * .008) * 0.15 + 0.85;
-                    x.save();
-                    x.strokeStyle = `rgba(255,211,77,${pulse})`;
-                    x.shadowColor = "#ffd34d"; x.shadowBlur = 15; x.lineWidth = 3;
-                    x.beginPath(); x.arc(aimed.pocket.x, aimed.pocket.y, 30, 0, Math.PI * 2); x.stroke();
-                    x.restore();
-                }
-            }
-        }
-        function drawCueStick() {
-            if (!aim || ballInHand || gameOver || simulating) return;
-            let q = balls[0];
-            let dx = q.x - mouse.x, dy = q.y - mouse.y, d = Math.hypot(dx, dy);
-            if (d < 4) return;
-            let nx = dx / d, ny = dy / d;
-
-            let norm = Math.min(d / 300, 1);
-            let pullBack = 30 + norm * 160;
-
-            let cx1 = q.x - nx * pullBack, cy1 = q.y - ny * pullBack;
-            let cx2 = q.x - nx * (pullBack + 200), cy2 = q.y - ny * (pullBack + 200);
-
-            x.strokeStyle = "rgba(0,0,0,.35)"; x.lineWidth = 8;
-            x.beginPath(); x.moveTo(cx1 + 2, cy1 + 2); x.lineTo(cx2 + 2, cy2 + 2); x.stroke();
-
-            let cg = x.createLinearGradient(cx1, cy1, cx2, cy2);
-            if (norm > 0.75) { cg.addColorStop(0, "#ff3030"); cg.addColorStop(.15, "#c04040"); cg.addColorStop(.85, "#5a1a1a"); cg.addColorStop(1, "#3a0808"); }
-            else if (norm > 0.4) { cg.addColorStop(0, "#ffa030"); cg.addColorStop(.15, "#d08020"); cg.addColorStop(.85, "#5a3a1a"); cg.addColorStop(1, "#3a2010"); }
-            else { cg.addColorStop(0, "#d4a030"); cg.addColorStop(.15, "#c49a3c"); cg.addColorStop(.85, "#5a3a1a"); cg.addColorStop(1, "#3a2010"); }
-            x.strokeStyle = cg; x.lineWidth = 6;
-            x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx2, cy2); x.stroke();
-
-            x.strokeStyle = "#f0f0f0"; x.lineWidth = 6;
-            x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx * 8, cy1 - ny * 8); x.stroke();
-        }
-
-        /* =========================================================
-           PARTICLES / TRAILS
-           ========================================================= */
-        function addPocketParticles() {
-            for (let i = 0; i < 18; i++) {
-                let p = pockets[Math.floor(Math.random() * pockets.length)];
-                particles.push({ x: p.x, y: p.y, vx: (Math.random() - .5) * 60, vy: (Math.random() - .5) * 60, life: 1, size: Math.random() * 4 + 2, color: Math.random() > .5 ? "#ffd34d" : "#fff" });
-            }
-        }
-        function addWinParticles() {
-            for (let i = 0; i < 100; i++) particles.push({ x: W / 2, y: H / 2, vx: Math.random() * 100 - 50, vy: Math.random() * 100 - 50, life: 1, size: Math.random() * 8 + 3, color: colors[Math.floor(Math.random() * 15)] });
-        }
-        function addImpactSparks(px, py, intensity) {
-            let count = Math.min(Math.floor(intensity * 3), 8);
-            for (let i = 0; i < count; i++) {
-                let ang = Math.random() * Math.PI * 2, spd = Math.random() * 80 + 40;
-                particles.push({ x: px, y: py, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, life: .7, size: Math.random() * 2 + 1.5, color: "#ffd34d" });
-            }
-        }
-        function addRailDust(px, py) {
-            for (let i = 0; i < 3; i++) particles.push({ x: px, y: py, vx: (Math.random() - .5) * 40, vy: (Math.random() - .5) * 40, life: .5, size: Math.random() * 3 + 1, color: "rgba(200,180,140,.7)" });
-        }
-        function updateParticles(dt) {
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                p.x += p.vx * dt; p.y += p.vy * dt;
-                p.vx *= 0.94; p.vy *= 0.94;
-                p.life -= 1.5 * dt;
-                if (p.life <= 0) particles.splice(i, 1);
-            }
-            for (let i = ballTrails.length - 1; i >= 0; i--) {
-                ballTrails[i].life -= 3 * dt;
-                if (ballTrails[i].life <= 0) ballTrails.splice(i, 1);
-            }
-        }
-        function drawParticles() {
-            for (let p of particles) {
-                x.globalAlpha = Math.max(0, p.life);
-                x.fillStyle = p.color;
-                x.beginPath(); x.arc(p.x, p.y, p.size, 0, Math.PI * 2); x.fill();
-            }
-            x.globalAlpha = 1;
-        }
-        function drawBallTrails() {
-            if (!trailsEnabled) return;
-            for (let t of ballTrails) {
-                x.globalAlpha = t.life * 0.3; x.fillStyle = t.c;
-                x.beginPath(); x.arc(t.x, t.y, t.r * 0.6 * t.life, 0, Math.PI * 2); x.fill();
-            }
-            x.globalAlpha = 1;
-        }
-        function updatePower() {
-            if (aim && !ballInHand) {
-                let q = balls[0];
-                let d = Math.hypot(q.x - mouse.x, q.y - mouse.y);
-                powerLevel = Math.min(d / 300 * 100, 100);
-                document.getElementById("powerBar").style.width = powerLevel + "%";
-                document.getElementById("powerText").textContent = `⚡ Power: ${Math.round(powerLevel)}%`;
-                document.getElementById("powerText").classList.toggle("max", powerLevel >= 98);
-                let fvB = document.getElementById("fvPowerBar"), fvT = document.getElementById("fvPowerText");
-                if (fvB) fvB.style.width = powerLevel + "%";
-                if (fvT) { fvT.textContent = `⚡ ${Math.round(powerLevel)}%`; fvT.style.color = powerLevel >= 98 ? "#e74c3c" : "#ffd34d"; }
-            } else {
-                powerLevel = 0;
-                document.getElementById("powerBar").style.width = "0%";
-                document.getElementById("powerText").textContent = "⚡ Power: 0%";
-                let fvB = document.getElementById("fvPowerBar"), fvT = document.getElementById("fvPowerText");
-                if (fvB) fvB.style.width = "0%";
-                if (fvT) fvT.textContent = "⚡ 0%";
-            }
-        }
-
-        function draw() {
-            x.clearRect(0, 0, W, H);
-            let rg = x.createLinearGradient(0, 0, 0, H);
-            rg.addColorStop(0, theme.rail1); rg.addColorStop(.3, theme.rail2);
-            rg.addColorStop(.5, theme.rail3); rg.addColorStop(.7, theme.rail2);
-            rg.addColorStop(1, theme.rail1);
-            x.fillStyle = rg; x.fillRect(0, 0, W, H);
-
-            let tg = x.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, 400);
-            tg.addColorStop(0, theme.felt0); tg.addColorStop(0.55, theme.felt1); tg.addColorStop(1, theme.felt2);
-            x.fillStyle = tg; x.fillRect(rail, rail, W - rail * 2, H - rail * 2);
-
-            if (isBreak || ballInHandKitchen) {
-                x.save(); x.strokeStyle = "rgba(255,255,255,.25)"; x.setLineDash([8, 6]); x.lineWidth = 2;
-                x.beginPath(); x.moveTo(HEAD_STRING_X, rail + 4); x.lineTo(HEAD_STRING_X, H - rail - 4); x.stroke();
-                x.restore();
-            }
-
-            for (let pi = 0; pi < pockets.length; pi++) {
-                let p = pockets[pi];
-                let hi = pocketsHighlight.includes(pi);
-                if (hi) {
-                    let pulse = Math.sin(Date.now() * .008) * 4 + 34;
-                    x.save(); x.strokeStyle = "rgba(46,204,113,.9)"; x.shadowColor = "#2ecc71"; x.shadowBlur = 15; x.lineWidth = 3;
-                    x.beginPath(); x.arc(p.x, p.y, pulse, 0, Math.PI * 2); x.stroke(); x.restore();
-                }
-                let sg = x.createRadialGradient(p.x, p.y, 3, p.x, p.y, 28);
-                sg.addColorStop(0, "#000"); sg.addColorStop(1, "#1a1a1a");
-                x.beginPath(); x.arc(p.x, p.y, 28, 0, Math.PI * 2);
-                x.fillStyle = sg; x.fill();
-            }
-
-            drawBallTrails();
-
-            for (let b of balls) {
-                if (!b.active) continue;
-                x.beginPath(); x.ellipse(b.x + 2, b.y + 3, R + 1, R * .7, 0, 0, Math.PI * 2);
-                x.fillStyle = "rgba(0,0,0,.4)"; x.fill();
-
-                let bg = x.createRadialGradient(b.x - R * .35, b.y - R * .4, R * .05, b.x, b.y, R);
-                bg.addColorStop(0, "rgba(255,255,255,.85)");
-                bg.addColorStop(.15, b.c);
-                bg.addColorStop(.7, b.c);
-                bg.addColorStop(1, darkenColor(b.c));
-                x.beginPath(); x.arc(b.x, b.y, R, 0, Math.PI * 2);
-                x.fillStyle = bg; x.fill();
-
-                x.beginPath(); x.arc(b.x, b.y, R, 0, Math.PI * 2);
-                x.strokeStyle = "rgba(0,0,0,.4)"; x.lineWidth = 1; x.stroke();
-
-                if (b.num) {
-                    x.beginPath(); x.arc(b.x, b.y, 5.5, 0, Math.PI * 2);
-                    x.fillStyle = "rgba(255,255,255,.95)"; x.fill();
-                    x.fillStyle = "#111"; x.font = "bold 6px Arial";
-                    x.textAlign = "center"; x.textBaseline = "middle";
-                    x.fillText(b.num, b.x, b.y);
-                }
-            }
-
-            if (aimAssist) drawAimAssist();
-            drawCueStick();
-
-            if (ballInHand && !gameOver && !simulating) {
-                let q = balls[0];
-                let pulse = Math.sin(Date.now() * .006) * 3;
-                x.beginPath(); x.arc(q.x, q.y, 24 + pulse, 0, Math.PI * 2);
-                x.strokeStyle = "#ffd34d"; x.lineWidth = 3; x.stroke();
-            }
-
-            drawParticles();
-            updateParticles(1 / 60);
-            updatePower();
-        }
-
-        function loop() {
-            if (gameOver && currentContext !== "puzzle") return;
-            // Idle loop: no physics unless simulating
-            draw();
-            raf = requestAnimationFrame(loop);
-        }
-
-        /* =========================================================
-           FINISH SHOT / RULES
-           ========================================================= */
-        function finishShot() {
-            let ev = shotEvents;
-            let pocketed = ev.pocketedThisShot.slice();
-            sessionStats.totalShots++;
-            sessionStats.totalPots += pocketed.length;
-            if (sessionStats.totalShots >= 50) unlockAchievement("shot_50");
-
-            if (currentContext === "puzzle" && currentPuzzle) {
-                puzzleShotsUsed++;
-                let rem = balls.filter(b => b.active && b.num !== 0).length;
-                if (rem === 0) {
-                    let stars = puzzleShotsUsed <= 1 ? 3 : puzzleShotsUsed <= 2 ? 2 : 1;
-                    if (stars > currentPuzzle.stars) currentPuzzle.stars = stars;
-                    saveAll(); unlockAchievement("puzzle_1");
-                    if (stars === 3) unlockAchievement("puzzle_all_stars");
-                    showToast(`🎉 Complete! ${"★".repeat(stars)}`, "gold");
-                    playWinSound();
-                    setTimeout(() => { currentContext = "quick"; currentPuzzle = null; reset(); }, 2000);
-                    return;
-                }
-                if (puzzleShotsUsed >= currentPuzzle.maxShots) {
-                    showToast(`❌ Out of shots!`, "red"); playLoseSound();
-                    setTimeout(() => reset(), 1500); return;
-                }
-                update();
-                raf = requestAnimationFrame(loop);
-                return;
-            }
-
-            let foul = null;
-            if (ev.cueScratched) foul = "Cue ball scratched";
-            else if (!ev.anyContact) foul = "No ball contacted";
-            else if (!isBreak && ev.firstHit !== null) {
-                let fg = groupOf(ev.firstHit), pg = groups[turn];
-                if (pg !== "open") {
-                    if (onEightBall(turn)) { if (fg !== "eight") foul = "Must hit 8-ball first"; }
-                    else if (fg !== pg) foul = `Must hit ${pg} first`;
-                }
-            }
-            else if (!isBreak && !ev.railAfterContact && pocketed.length === 0) foul = "No rail after contact";
-            if (isBreak && !foul) {
-                if (!ev.brokeRack) foul = "Cue never hit rack";
-                else if (!ev.railAfterContact && pocketed.length === 0) foul = "Illegal break";
-            }
-
-            if (pocketed.includes(8)) { handleEight(pocketed, foul); return; }
-            if (foul) { applyFoul(foul, pocketed); return; }
-
-            let own = 0, opp = 0;
-            for (let num of pocketed) {
-                let g = groupOf(num);
-                if (isBreak || groups[turn] === "open") {
-                    if ((g === "solids" || g === "stripes") && groups[turn] === "open") assignGroups(turn, g);
-                } else {
-                    if (g === groups[turn]) own++;
-                    else if (g === "solids" || g === "stripes") opp++;
-                }
-            }
-
-            if (isBreak) {
-                isBreak = false;
-                if (pocketed.length > 0) {
-                    unlockAchievement("break_pot");
-                    scores[turn] += pocketed.length * 10;
-                    setMessage(`🎱 Break! ${pocketed.length} ball(s) pocketed. Table OPEN.`, true, "success");
-                    update(); raf = requestAnimationFrame(loop); return;
-                } else { setMessage("🎱 Break! No balls pocketed.", false); switchTurn(); raf = requestAnimationFrame(loop); return; }
-            }
-
-            if (own > 0 || pocketed.length > 0) {
-                combo++;
-                if (combo > maxCombo) maxCombo = combo;
-                if (combo > sessionStats.longestCombo) sessionStats.longestCombo = combo;
-                if (combo >= 3) unlockAchievement("combo_3");
-                if (combo >= 5) unlockAchievement("combo_5");
-                scores[turn] += own * 10;
-                scores[1 - turn] += opp * 10;
-                let txt = `✅ P${turn + 1} pocketed ${own}`;
-                if (combo > 1) txt += ` · Combo x${combo}!`;
-                setMessage(txt, true, "success");
-                update(); raf = requestAnimationFrame(loop); return;
-            }
-
-            combo = 0;
-            setMessage("❌ No ball pocketed — turn passes.");
-            switchTurn();
-            raf = requestAnimationFrame(loop);
-        }
-        function assignGroups(p, g) {
-            groups[p] = g; groups[1 - p] = g === "solids" ? "stripes" : "solids";
-            updateGroupBadge(1, groups[0]); updateGroupBadge(2, groups[1]);
-            showToast(`P${p + 1} takes ${g.toUpperCase()}`, "green");
-        }
-        function handleEight(pocketed, existingFoul) {
-            if (!onEightBall(turn)) { loseGame(turn, "Pocketed 8-ball too early"); return; }
-            let wrong = false;
-            if (calledPocket !== null && shotEvents.eightBallPocket !== undefined && shotEvents.eightBallPocket !== calledPocket) wrong = true;
-            if (existingFoul) { loseGame(turn, "Fouled on 8-ball"); return; }
-            if (wrong) { loseGame(turn, "8-ball in wrong pocket"); return; }
-            winGame(turn);
-        }
-        function applyFoul(reason, pocketed) {
-            fouls[turn]++;
-            let offender = turn;
-            let kitchen = isBreak && shotEvents.cueScratched;
-            isBreak = false;
-            turn = 1 - turn;
-            ballInHand = true; ballInHandKitchen = kitchen;
-            let cue = balls.find(b => b.num === 0);
-            if (cue) {
-                cue.active = true; cue.vx = cue.vy = cue.spin = 0;
-                cue.x = kitchen ? 150 : 245; cue.y = 250;
-            }
-            setMessage(`⚠️ FOUL — ${reason}`, true, "foul");
-            playFoulSound();
-            shotHistory.push({ player: offender + 1, pocketed: pocketed.length, foul: true });
-            updateHistory(); update();
-            raf = requestAnimationFrame(loop);
-        }
-        function winGame(p) {
-            gameOver = true;
-            sessionStats.winStreak = (sessionStats.winStreak || 0) + 1;
-            if (sessionStats.winStreak >= 3) unlockAchievement("streak_3");
-            if (sessionStats.winStreak >= 5) unlockAchievement("streak_5");
-            unlockAchievement("first_win"); unlockAchievement("eight_ball");
-            if (currentDifficulty === "hard") unlockAchievement("beat_hard");
-            if (currentDifficulty === "pro") unlockAchievement("beat_pro");
-
-            let reward = mode === "ai" ? 20 : 15;
-            if (currentDifficulty === "hard") reward += 15;
-            if (currentDifficulty === "pro") reward += 30;
-            coinBalance += reward; sessionStats.coinsEarned += reward;
-            if (coinBalance >= 1000) unlockAchievement("coin_1000");
-            if (fouls[p] === 0 && mode === "ai") unlockAchievement("no_foul");
-            saveAll();
-
-            document.getElementById("trophyIcon").textContent = "🏆";
-            document.getElementById("winner").textContent = `Player ${p + 1} Wins!`;
-            document.getElementById("final").textContent = `P1 ${scores[0]} — P2 ${scores[1]}  · +💰${reward}`;
-            document.getElementById("sessionRecap").innerHTML = `
-    <div class="item"><div class="lbl">Shots</div><div class="val">${shotCount}</div></div>
-    <div class="item"><div class="lbl">Best Combo</div><div class="val">x${maxCombo}</div></div>
-    <div class="item"><div class="lbl">Streak</div><div class="val">${sessionStats.winStreak}</div></div>
-    <div class="item"><div class="lbl">Coins</div><div class="val">💰${coinBalance}</div></div>`;
-            overlay.classList.add("show");
-            addWinParticles(); playWinSound();
-
-            if (currentContext === "tournament") {
-                if (p === 0) tournamentPlayerWins++;
-                setTimeout(() => { overlay.classList.remove("show"); advanceTournament(p === 0); setTimeout(() => openTournament(), 500); }, 2500);
-            }
-        }
-        function loseGame(loser, reason) {
-            gameOver = true;
-            sessionStats.winStreak = 0; saveAll();
-            document.getElementById("trophyIcon").textContent = "💀";
-            document.getElementById("winner").textContent = `Player ${2 - loser} Wins!`;
-            document.getElementById("final").textContent = `P${loser + 1} lost: ${reason}`;
-            document.getElementById("sessionRecap").innerHTML = `
-    <div class="item"><div class="lbl">Shots</div><div class="val">${shotCount}</div></div>
-    <div class="item"><div class="lbl">Best Combo</div><div class="val">x${maxCombo}</div></div>
-    <div class="item"><div class="lbl">Reason</div><div class="val" style="font-size:11px">${reason}</div></div>
-    <div class="item"><div class="lbl">Coins</div><div class="val">💰${coinBalance}</div></div>`;
-            overlay.classList.add("show");
-            addWinParticles(); playLoseSound();
-            if (currentContext === "tournament") {
-                setTimeout(() => { overlay.classList.remove("show"); advanceTournament(false); setTimeout(() => openTournament(), 500); }, 2500);
-            }
-        }
-        function switchTurn() {
-            turn = 1 - turn;
-            ballInHand = false; ballInHandKitchen = false; calledPocket = null;
-            update();
-        }
-
-        /* =========================================================
-           INPUT
-           ========================================================= */
-        function handleDown(p) {
-            if (gameOver || aiThinking || simulating) return;
-            let cue = balls[0];
-            if (ballInHand) {
-                let valid = true;
-                if (ballInHandKitchen && p.x > HEAD_STRING_X) valid = false;
-                for (let b of balls) {
-                    if (b.num === 0 || !b.active) continue;
-                    if (Math.hypot(p.x - b.x, p.y - b.y) < R * 2 + 2) { valid = false; break; }
-                }
-                if (!valid) { showToast("❌ Invalid", "red"); return; }
-                cue.x = Math.max(rail + R, Math.min(W - rail - R, p.x));
-                cue.y = Math.max(rail + R, Math.min(H - rail - R, p.y));
-                cue.vx = cue.vy = cue.spin = 0; cue.active = true;
-                saveState();
-                ballInHand = false; ballInHandKitchen = false;
-                setMessage(`🎯 Placed. Drag to shoot.`, true, "success");
-                update(); return;
-            }
-            if (onEightBall(turn) && currentContext !== "puzzle") {
-                for (let pi = 0; pi < pockets.length; pi++) {
-                    let pk = pockets[pi];
-                    if (Math.hypot(p.x - pk.x, p.y - pk.y) < 35) {
-                        calledPocket = pi; showToast(`📍 ${pk.name}`, "gold"); update(); return;
-                    }
-                }
-            }
-            aim = true;
-            mouse = p;
-        }
-        function handleMove(p) { mouse = p; }
-        function handleUp(p) {
-            if (ballInHand && !gameOver && !aiThinking && !simulating) return;
-            if (!aim || aiThinking || simulating) return;
-            aim = false;
-            let q = balls[0];
-            let dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy);
-            if (d < 8) { updatePower(); return; }
-            if (onEightBall(turn) && calledPocket === null && currentContext !== "puzzle") {
-                showToast("📍 Call a pocket first!", "red"); updatePower(); return;
-            }
-            // Normalize power: 0 to 1
-            let norm = Math.min(d / 300, 1);
-            let cue = getCue();
-            // REALISTIC SPEED: max 950 px/s
-            let speed = norm * MAX_BALL_SPEED * cue.powerMult;
-            if (speed > MAX_BALL_SPEED * 1.15) speed = MAX_BALL_SPEED * 1.15;
-
-            let nx = dx / d, ny = dy / d;
-            q.vx = nx * speed;
-            q.vy = ny * speed;
-            q.spin = +spinEl.value * norm * 5 * cue.spinMult;
-
-            let pct = Math.round(norm * 100);
-            setMessage(`⚡ ${pct}% power`);
-            saveState();
-            shotCount++;
-            startSimulation();
-            update();
-            updatePower();
-        }
-
-        c.addEventListener("pointerdown", e => { e.preventDefault(); handleDown(pos(e)); });
-        c.addEventListener("pointermove", e => handleMove(pos(e)));
-        c.addEventListener("pointerup", e => handleUp(pos(e)));
-        c.addEventListener("pointercancel", () => { aim = false; updatePower(); });
-        c.addEventListener("contextmenu", e => e.preventDefault());
-        c.addEventListener("touchstart", e => { if (e.touches.length > 1) return; e.preventDefault(); handleDown(pos(e.touches[0])); }, { passive: false });
-        c.addEventListener("touchmove", e => { e.preventDefault(); if (e.touches.length > 0) handleMove(pos(e.touches[0])); }, { passive: false });
-        c.addEventListener("touchend", e => { e.preventDefault(); if (e.changedTouches.length > 0) handleUp(pos(e.changedTouches[0])); }, { passive: false });
-
-        function saveState() {
-            undoStack.push({
-                balls: balls.map(b => ({ ...b })),
-                turn, score: [...scores], foul: [...fouls], shotCount, ballInHand, combo,
-                groups: [...groups], isBreak, calledPocket, ballInHandKitchen
+            grid.querySelectorAll(".puzzle-card").forEach(card => {
+                card.onclick = () => {
+                    let id = card.dataset.puzzle;
+                    let idx = PUZZLES.findIndex(p => p.id === id);
+                    if (!(idx === 0 || PUZZLES[idx - 1].stars > 0)) { showToast("🔒 Locked", "red"); return; }
+                    startPuzzle(id);
+                };
             });
-            if (undoStack.length > 40) undoStack.shift();
         }
-        function undo() {
-            if (!undoStack.length) { showToast("⚠️ Nothing to undo"); return; }
-            let s = undoStack.pop();
-            if (s === null) { showToast("⚠️ Cannot undo"); return; }
-            cancelAnimationFrame(raf);
-            simulating = false;
-            balls = s.balls; turn = s.turn; scores = [...s.score]; fouls = [...s.foul];
-            shotCount = s.shotCount; ballInHand = s.ballInHand; combo = s.combo || 0;
-            groups = [...s.groups]; isBreak = s.isBreak;
-            calledPocket = s.calledPocket; ballInHandKitchen = s.ballInHandKitchen || false;
-            if (shotHistory.length) shotHistory.pop();
-            particles = []; ballTrails = []; ghostTrails = [];
-            aim = false; gameOver = false;
-            setMessage("↩ Undone!");
-            update(); updateHistory();
-            raf = requestAnimationFrame(loop);
+        function startPuzzle(id) {
+            let p = PUZZLES.find(x => x.id === id);
+            if (!p) return;
+            currentPuzzle = p; currentContext = "puzzle"; puzzleShotsUsed = 0;
+            document.getElementById("puzzlesOverlay").classList.remove("show");
+            document.getElementById("navPuzzles").classList.remove("active");
+            document.getElementById("navQuick").classList.add("active");
+            reset(); showToast(`🎯 ${p.name}`, "gold");
         }
 
-        /* =========================================================
-           AI
-           ========================================================= */
-        function aiThink() {
-            aiThinking = true;
-            setMessage(`🤖 ${AI_LEVELS[currentDifficulty].name} AI...`);
-            setTimeout(() => { aiShot(); aiThinking = false; }, 600);
-        }
-        function aiShot() {
-            let cue = balls.find(b => b.num === 0 && b.active);
-            if (!cue) return;
-            let lvl = AI_LEVELS[currentDifficulty];
-            let target = null, minD = Infinity;
-            for (let b of balls) {
-                if (!b.active || b.num === 0) continue;
-                let legal = isBreak ? true : (groups[turn] === "open" ? b.num !== 8 : (onEightBall(turn) ? b.num === 8 : groupOf(b.num) === groups[turn]));
-                if (!legal) continue;
-                let d = Math.hypot(b.x - cue.x, b.y - cue.y);
-                if (d < minD) { minD = d; target = b; }
-            }
-            if (!target) target = balls.find(b => b.active && b.num !== 0);
-            if (!target) return;
-
-            let dx = cue.x - target.x, dy = cue.y - target.y, d = Math.hypot(dx, dy) || 1;
-            let nx = dx / d, ny = dy / d;
-            let angErr = (Math.random() - 0.5) * lvl.error * 2;
-            let cosA = Math.cos(angErr), sinA = Math.sin(angErr);
-            let rnx = nx * cosA - ny * sinA;
-            let rny = nx * sinA + ny * cosA;
-            let spd = lvl.power;
-            cue.vx = rnx * spd; cue.vy = rny * spd;
-            cue.spin = 0;
-            if (onEightBall(turn) && calledPocket === null) {
-                let bp = 0, bd = Infinity;
-                for (let pi = 0; pi < pockets.length; pi++) {
-                    let dd = Math.hypot(pockets[pi].x - target.x, pockets[pi].y - target.y);
-                    if (dd < bd) { bd = dd; bp = pi; }
-                }
-                calledPocket = bp;
-            }
-            ballInHand = false; ballInHandKitchen = false;
-            saveState();
-            startSimulation();
-            update();
-        }
-
-        /* =========================================================
-           HIGH SCORES & UI
-           ========================================================= */
-        function saveHighScore(p, s) {
-            try {
-                let hs = JSON.parse(localStorage.getItem("waseemPoolScores") || "[]");
-                hs.push({ player: p, score: s, mode: "8ball", date: new Date().toLocaleDateString() });
-                hs.sort((a, b) => b.score - a.score);
-                localStorage.setItem("waseemPoolScores", JSON.stringify(hs.slice(0, 10)));
-            } catch (e) { }
-        }
+        /* THEME */
         const themeKeys = ["classic", "midnight", "royal", "crimson"];
         function cycleTheme() {
             let idx = themeKeys.indexOf(themeKey);
@@ -3091,18 +2941,12 @@
         function toggleSound() {
             soundEnabled = !soundEnabled;
             document.getElementById("soundIco").textContent = soundEnabled ? "🔊" : "🔇";
-            showToast(soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF");
+            showToast(soundEnabled ? "🔊 ON" : "🔇 OFF");
         }
         function toggleAimAssist() {
             aimAssist = !aimAssist;
             document.getElementById("aimAssistToggle").classList.toggle("on", aimAssist);
-            showToast(aimAssist ? "🎯 Aim ON" : "🎯 Aim OFF", "gold");
-        }
-        function toggleTrails() {
-            trailsEnabled = !trailsEnabled;
-            document.getElementById("trailsToggle").classList.toggle("on", trailsEnabled);
-            if (!trailsEnabled) ballTrails = [];
-            showToast(trailsEnabled ? "✨ Trails ON" : "✨ Trails OFF", "gold");
+            showToast(aimAssist ? "🎯 Aim Assist ON" : "🎯 Aim Assist OFF", "gold");
         }
         function setMode(m) {
             mode = m; currentContext = "quick";
@@ -3127,7 +2971,12 @@
             saveAll();
             showToast(`🤖 ${AI_LEVELS[d].name}`, "gold");
         }
+        function openShop() {
+            renderCues();
+            document.getElementById("cuesOverlay").classList.add("show");
+        }
 
+        /* EVENTS */
         document.getElementById("navQuick").onclick = () => {
             currentContext = "quick";
             document.getElementById("navQuick").classList.add("active");
@@ -3138,15 +2987,9 @@
         };
         document.getElementById("navTournament").onclick = () => { document.getElementById("navTournament").classList.add("active"); openTournament(); };
         document.getElementById("navPuzzles").onclick = () => { document.getElementById("navPuzzles").classList.add("active"); renderPuzzles(); document.getElementById("puzzlesOverlay").classList.add("show"); };
-        document.getElementById("navCues").onclick = () => { renderCues(); document.getElementById("cuesOverlay").classList.add("show"); };
+        document.getElementById("navCues").onclick = openShop;
         document.getElementById("navAch").onclick = () => { renderAchievements(); document.getElementById("achOverlay").classList.add("show"); };
-        document.getElementById("navFullview").onclick = toggleFullView;
-        document.getElementById("exitFullview").onclick = exitFullView;
-        document.getElementById("fvUndo") && (document.getElementById("fvUndo").onclick = undo);
-        document.getElementById("fvReplay") && (document.getElementById("fvReplay").onclick = () => { });
-        document.getElementById("fvNew") && (document.getElementById("fvNew").onclick = () => { reset(); showToast("🔄 New", "gold"); });
-        document.getElementById("fvSpin") && document.getElementById("fvSpin").addEventListener("input", (e) => { spinEl.value = e.target.value; });
-        spinEl.addEventListener("input", (e) => { let fv = document.getElementById("fvSpin"); if (fv) fv.value = e.target.value; });
+        document.getElementById("shopBtn").onclick = openShop;
 
         document.getElementById("modeVs").onclick = () => setMode("vs");
         document.getElementById("modeAi").onclick = () => setMode("ai");
@@ -3156,7 +2999,7 @@
         document.getElementById("diffPro").onclick = () => setDifficulty("pro");
         document.getElementById("restart").onclick = () => { reset(); showToast("🔄 New", "gold"); };
         document.getElementById("undo").onclick = undo;
-        document.getElementById("replayBtn").onclick = () => showToast("🎬 No replay yet", "red");
+        document.getElementById("replayBtn").onclick = () => showToast("🎬 Replay not available", "red");
         document.getElementById("themeBtn").onclick = cycleTheme;
         document.getElementById("helpBtn").onclick = () => document.getElementById("helpOverlay").classList.add("show");
         document.getElementById("soundBtn").onclick = toggleSound;
@@ -3164,7 +3007,6 @@
         document.getElementById("home").onclick = () => overlay.classList.remove("show");
         document.getElementById("closeWin").onclick = () => overlay.classList.remove("show");
         document.getElementById("aimAssistToggle").onclick = toggleAimAssist;
-        document.getElementById("trailsToggle").onclick = toggleTrails;
         document.getElementById("startTourney").onclick = () => { if (!tournamentBracket) tournamentBracket = generateTournamentBracket(); startTournamentMatch(); };
         document.getElementById("resetTourney").onclick = () => { tournamentBracket = generateTournamentBracket(); tournamentActive = true; tournamentPlayerWins = 0; renderBracket(); saveAll(); showToast("🔄 New bracket", "gold"); };
 
@@ -3172,17 +3014,16 @@
 
         window.addEventListener("keydown", e => {
             if (e.key === "z" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); undo(); }
-            if (e.key === "Escape") { document.querySelectorAll(".overlay").forEach(o => o.classList.remove("show")); if (fullViewActive) exitFullView(); }
+            if (e.key === "Escape") document.querySelectorAll(".overlay").forEach(o => o.classList.remove("show"));
             if (e.key === "h" || e.key === "?") document.getElementById("helpOverlay").classList.add("show");
             if (e.key === "t") cycleTheme();
             if (e.key === "m") toggleSound();
             if (e.key === "a") toggleAimAssist();
-            if (e.key === "f" && !e.ctrlKey && !e.metaKey && !e.target.matches("input")) { e.preventDefault(); toggleFullView(); }
+            if (e.key === "s" && !e.target.matches("input")) openShop();
         });
 
         if (window.ResizeObserver) new ResizeObserver(() => resizeCanvas()).observe(document.querySelector(".tableWrap"));
         window.addEventListener("resize", resizeCanvas);
-        window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 200));
 
         let hour = new Date().getHours();
         if (hour >= 0 && hour < 5) setTimeout(() => unlockAchievement("night_owl"), 1000);
@@ -3191,6 +3032,7 @@
         applyThemeToDOM();
         document.getElementById("cueName").textContent = getCue().name;
         setDifficulty(currentDifficulty);
+        updateCoinDisplays();
         reset();
         setInterval(saveAll, 15000);
     </script>
