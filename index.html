@@ -24,10 +24,6 @@
     background-image:radial-gradient(ellipse at 50% 0%,#1a1520 0%,#080c12 70%);
     transition:background .4s;
   }
-  body.theme-classic{background-image:radial-gradient(ellipse at 50% 0%,#1a0f0a 0%,#050302 70%)}
-  body.theme-neon{background-image:radial-gradient(ellipse at 50% 0%,#0a1a2a 0%,#020508 70%)}
-  body.theme-royal{background-image:radial-gradient(ellipse at 50% 0%,#1a0a20 0%,#050208 70%)}
-
   .game{width:100%;max-width:1400px;display:flex;flex-direction:column;min-height:0}
   h1{text-align:center;margin:0 0 10px;font-size:clamp(20px,4vw,36px);
     background:linear-gradient(135deg,#ffd34d,#ff6b35,#ffd34d);
@@ -113,6 +109,19 @@
     display:flex;justify-content:space-between}
   .control-row input[type=range]{width:100%;accent-color:var(--gold);height:24px;cursor:pointer}
   .control-row .small{font-size:10px;color:var(--text-dim);text-align:center}
+
+  /* Aim assist toggle */
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;
+    padding:8px 10px;border-radius:8px;background:rgba(10,16,22,.6);
+    border:1px solid #1e2a38;margin-top:4px;font-size:12px;color:var(--text-soft)}
+  .toggle-switch{position:relative;width:42px;height:22px;background:#1a2535;
+    border-radius:11px;cursor:pointer;transition:background .3s;border:1px solid var(--border)}
+  .toggle-switch.on{background:rgba(255,211,77,.3);border-color:var(--gold)}
+  .toggle-switch::after{content:'';position:absolute;top:2px;left:2px;
+    width:16px;height:16px;border-radius:50%;background:#8a99a8;
+    transition:all .3s}
+  .toggle-switch.on::after{left:22px;background:var(--gold);
+    box-shadow:0 0 8px var(--gold)}
 
   button{width:100%;min-height:42px;margin-top:4px;border:0;border-radius:10px;
     background:linear-gradient(135deg,#e6b83f,#d4a030);color:#1a1a1a;
@@ -233,6 +242,7 @@
     .power-bar-wrap{grid-column:1/-1}
     .power-text{grid-column:1/-1;margin-top:-6px}
     .btn-row{grid-column:1/-1}
+    .toggle-row{grid-column:1/-1}
     #restart{grid-column:1/-1}
   }
   @media(max-width:640px){
@@ -258,7 +268,6 @@
     button{min-height:48px}
     .tool-btn{min-height:40px}
   }
-  /* Landscape phone */
   @media(max-height:500px) and (orientation:landscape){
     h1{font-size:16px;margin-bottom:4px}
     h1 small{display:none}
@@ -272,7 +281,6 @@
 <div class="game">
   <h1 class="float">🎱 Waseem Pool World <small>PRO EDITION</small></h1>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
     <div class="tool-group">
       <button class="tool-btn active" id="modeVs" title="Two players"><span class="ico">👥</span><span class="label-text">VS Player</span></button>
@@ -328,6 +336,11 @@
         <input id="spin" type="range" min="-1" max="1" step=".01" value="0">
       </div>
 
+      <div class="toggle-row">
+        <span>🎯 Aim Assist</span>
+        <div class="toggle-switch on" id="aimAssistToggle"></div>
+      </div>
+
       <div class="btn-row">
         <button id="undo" class="secondary">↩ Undo</button>
         <button id="restart" class="danger">🔄 New</button>
@@ -339,7 +352,6 @@
   </div>
 </div>
 
-<!-- WIN OVERLAY -->
 <div class="overlay" id="overlay">
   <div class="win">
     <div class="trophy">🏆</div>
@@ -352,14 +364,15 @@
   </div>
 </div>
 
-<!-- HELP OVERLAY -->
 <div class="overlay" id="helpOverlay">
   <div class="win">
     <h2 style="font-size:24px">❓ How to Play</h2>
     <div class="help-content">
-      <h3>🎯 Shooting</h3>
+      <h3>🎯 Shooting & Aiming</h3>
       <ul>
         <li>Drag backward from the cue ball and release to shoot.</li>
+        <li>A <strong>predictive trajectory line</strong> shows where the cue ball will go.</li>
+        <li>A <strong>ghost ball</strong> and <strong>target line</strong> show the first collision.</li>
         <li>Longer drag = more power. Watch the power bar.</li>
         <li>Use the <strong>Spin</strong> slider to apply topspin or backspin.</li>
       </ul>
@@ -368,6 +381,7 @@
         <li><kbd>Undo</kbd> reverses your last shot.</li>
         <li><kbd>New</kbd> starts a fresh game.</li>
         <li><kbd>Theme</kbd> cycles table colors.</li>
+        <li><kbd>Aim Assist</kbd> toggles the trajectory preview.</li>
       </ul>
       <h3>🖐️ Ball in Hand</h3>
       <ul>
@@ -380,27 +394,19 @@
         <li><strong>9-Ball:</strong> Pocket the 9-ball to win.</li>
         <li><strong>Straight:</strong> Pocket as many balls as possible.</li>
       </ul>
-      <h3>💡 Tips</h3>
-      <ul>
-        <li>Build combos by pocketing multiple balls per turn.</li>
-        <li>The timer keeps the game moving — don't stall!</li>
-        <li>Topspin rolls forward; backspin pulls back.</li>
-      </ul>
     </div>
     <button id="closeHelp" style="margin-top:16px">Got it!</button>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
    WASEEM POOL WORLD · PRO EDITION
-   All systems integrated: physics, AI, UI, themes, audio
+   Enhanced aiming: ghost ball, trajectory prediction, target line
    ========================================================= */
 
-// ----- CANVAS & CONSTANTS -----
 const c = document.getElementById("table");
 const x = c.getContext("2d");
 const W = 900, H = 500, rail = 38, R = 12;
@@ -416,7 +422,6 @@ const colors = [
   "#326bd3", "#d9483f", "#7544bd", "#e59a25", "#258e61", "#9e3434"
 ];
 
-// ----- TUNABLE PHYSICS -----
 const POWER_SCALE = 0.045;
 const MAX_DRAG = 180;
 const FRICTION = 0.975;
@@ -428,41 +433,44 @@ const AI_POWER = 3.0;
 const SIM_STOP_THRESHOLD = 0.05;
 const MAX_SIM_TIME = 12000;
 
-// ----- THEMES -----
+// Aim assist settings
+const AIM_LINE_MAX_LEN = 700;      // max prediction length
+const AIM_RAY_STEPS = 260;          // resolution of ray march
+const AIM_RAY_STEP = 3;             // px per step
+
 const themes = {
   classic: {
     name:"Classic",
     rail1:"#4a2818", rail2:"#6b4428", rail3:"#5a3520",
     felt0:"#1a7a50", felt1:"#126541", felt2:"#0e4d30",
     clothGlow:"rgba(255,255,255,.03)",
-    wrapGrad:"linear-gradient(135deg,#5a3520,#3a2010)"
+    aimColor:"#ffffff"
   },
   midnight: {
     name:"Midnight",
     rail1:"#1a1a2a", rail2:"#2a2a40", rail3:"#202035",
     felt0:"#0a3a5a", felt1:"#062a45", felt2:"#031a30",
     clothGlow:"rgba(100,180,255,.04)",
-    wrapGrad:"linear-gradient(135deg,#1a2030,#0a1020)"
+    aimColor:"#88ddff"
   },
   royal: {
     name:"Royal",
     rail1:"#2a1040", rail2:"#4a2060", rail3:"#3a1850",
     felt0:"#4a1060", felt1:"#360a48", felt2:"#240630",
     clothGlow:"rgba(255,100,255,.04)",
-    wrapGrad:"linear-gradient(135deg,#3a1a4a,#1a0825)"
+    aimColor:"#ffbbff"
   },
   crimson: {
     name:"Crimson",
     rail1:"#3a0a0a", rail2:"#6a1515", rail3:"#501010",
     felt0:"#8a1a1a", felt1:"#6a1010", felt2:"#4a0808",
     clothGlow:"rgba(255,150,150,.04)",
-    wrapGrad:"linear-gradient(135deg,#4a1010,#2a0505)"
+    aimColor:"#ffddaa"
   }
 };
 let themeKey = "classic";
 let theme = themes.classic;
 
-// ----- GAME STATE -----
 let balls = [];
 let turn = 0;
 let scores = [0, 0];
@@ -489,7 +497,7 @@ let aiThinking = false;
 let powerLevel = 0;
 let audioCtx = null;
 let soundEnabled = true;
-let lastMessage = "";
+let aimAssist = true;
 
 const spinEl = document.getElementById("spin");
 const msg = document.getElementById("message");
@@ -497,7 +505,6 @@ const overlay = document.getElementById("overlay");
 const helpOverlay = document.getElementById("helpOverlay");
 const toast = document.getElementById("toast");
 
-// ----- TOAST -----
 let toastTimer = null;
 function showToast(text, gold=false) {
   toast.textContent = text;
@@ -506,7 +513,6 @@ function showToast(text, gold=false) {
   toastTimer = setTimeout(() => toast.className = "toast", 2200);
 }
 
-// ----- UTILS -----
 function makeBall(px, py, col, num) {
   return {x:px, y:py, vx:0, vy:0, spin:0, r:R, c:col, num, active:true, rot:0};
 }
@@ -524,7 +530,6 @@ function pos(e) {
   return {x:(cx-q.left)*W/q.width, y:(cy-q.top)*H/q.height};
 }
 
-// ----- AUDIO -----
 function initAudio() {
   if (!audioCtx) {
     try { audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){}
@@ -552,7 +557,6 @@ const playWinSound = () => {
 };
 const playComboSound = () => { playSound(1000,.1,"square",.08); setTimeout(()=>playSound(1300,.1,"square",.08),80); };
 
-// ----- RESIZE -----
 function resizeCanvas() {
   let wrap = c.parentElement;
   let w = wrap.clientWidth - (window.innerWidth < 640 ? 12 : 24);
@@ -566,7 +570,6 @@ function resizeCanvas() {
   c.style.height = h + "px";
 }
 
-// ----- RESET -----
 function reset() {
   cancelAnimationFrame(raf);
   balls = []; scores = [0,0]; fouls = [0,0]; turn = 0;
@@ -595,9 +598,7 @@ function reset() {
   loop();
 }
 
-// ----- MESSAGE -----
 function setMessage(text, flash=true) {
-  lastMessage = text;
   msg.innerHTML = text;
   if (flash) {
     msg.classList.remove("flash");
@@ -606,7 +607,6 @@ function setMessage(text, flash=true) {
   }
 }
 
-// ----- UI UPDATE -----
 function update() {
   document.getElementById("p1").textContent = scores[0];
   document.getElementById("p2").textContent = scores[1];
@@ -623,11 +623,9 @@ function update() {
   document.getElementById("modeBadge").textContent = mode === "ai" ? "🤖 AI" : "👥 VS";
   document.getElementById("modeBadge").className = "mode-badge " + (mode === "ai" ? "badge-ai" : "badge-vs");
 
-  // Highlight active player card
   document.getElementById("card1").classList.toggle("active", turn === 0 && !gameOver);
   document.getElementById("card2").classList.toggle("active", turn === 1 && !gameOver);
 
-  // Ball-in-hand override message
   if (ballInHand && !gameOver && !simulating) {
     setMessage(`🖐️ <span class="ball-in-hand-indicator">BALL IN HAND</span> — Player ${turn+1}, tap anywhere on the table to place the cue ball.`, false);
   }
@@ -645,7 +643,6 @@ function updateHistory() {
   el.innerHTML = html;
 }
 
-// ----- SAVE / UNDO -----
 function saveState() {
   undoStack.push({
     balls: balls.map(b => ({...b, active:b.active, vx:b.vx, vy:b.vy, spin:b.spin, x:b.x, y:b.y})),
@@ -668,7 +665,6 @@ function undo() {
   showToast("↩ Undone", true);
 }
 
-// ----- GAME FLOW -----
 function shotStart() {
   let before = balls.filter(b => b.active && b.num > 0).length;
   setMessage(`🎯 Player ${turn+1} shooting...`);
@@ -781,7 +777,6 @@ function win(p) {
   playWinSound();
 }
 
-// ----- AI -----
 function aiThink() {
   aiThinking = true;
   setMessage("🤖 AI is thinking...");
@@ -815,7 +810,6 @@ function aiShot() {
   update();
 }
 
-// ----- TIMER -----
 function startTimer() {
   if (!timerEnabled) return;
   clearInterval(timerInterval);
@@ -835,7 +829,6 @@ function startTimer() {
   }, 1000);
 }
 
-// ----- PARTICLES -----
 function addPocketParticles() {
   for (let i = 0; i < 18; i++) {
     let p = pockets[Math.floor(Math.random()*pockets.length)];
@@ -880,7 +873,6 @@ function drawParticles() {
   x.globalAlpha = 1;
 }
 
-// ----- GHOST TRAILS -----
 function addGhostTrail() {
   if (Math.random() > .3) return;
   let active = balls.filter(b => b.active && Math.hypot(b.vx,b.vy) > .6);
@@ -903,7 +895,6 @@ function drawGhostTrails() {
   x.globalAlpha = 1;
 }
 
-// ----- POWER BAR -----
 function updatePower() {
   if (aim && !ballInHand) {
     let q = balls[0];
@@ -918,7 +909,303 @@ function updatePower() {
   }
 }
 
-// ----- PHYSICS -----
+/* =========================================================
+   ENHANCED AIM ASSIST
+   - Ray-casts the cue ball path, bouncing off walls
+   - Finds the first ball collision
+   - Draws ghost ball at impact point
+   - Draws target ball's predicted direction (object ball line)
+   - Draws cue ball's deflection path (tangent line)
+   - Highlights pocket if the object ball is aimed at one
+   ========================================================= */
+
+/**
+ * Returns {hit:boolean, x,y, ball, nx, ny, dist}
+ * Ray-marches from (x0,y0) in direction (dx,dy) and returns
+ * the first ball it would hit, plus the normal at impact.
+ */
+function raycastToFirstBall(x0, y0, dx, dy, ignoreBall) {
+  let cx = x0, cy = y0;
+  let lastX = x0, lastY = y0;
+  for (let s = 0; s < AIM_RAY_STEPS; s++) {
+    lastX = cx; lastY = cy;
+    cx += dx * AIM_RAY_STEP;
+    cy += dy * AIM_RAY_STEP;
+
+    // Wall bounce
+    if (cx < rail + R) { cx = rail + R; dx = Math.abs(dx); }
+    else if (cx > W - rail - R) { cx = W - rail - R; dx = -Math.abs(dx); }
+    if (cy < rail + R) { cy = rail + R; dy = Math.abs(dy); }
+    else if (cy > H - rail - R) { cy = H - rail - R; dy = -Math.abs(dy); }
+
+    // Check each ball
+    for (let b of balls) {
+      if (!b.active || b === ignoreBall) continue;
+      let ddx = cx - b.x, ddy = cy - b.y;
+      let dist = Math.hypot(ddx, ddy);
+      if (dist < R + R) {
+        // Approximate impact point
+        let nrm = Math.hypot(ddx, ddy);
+        let nx = ddx / (nrm || 1), ny = ddy / (nrm || 1);
+        // Move back to exact contact
+        let contactX = b.x + nx * R;
+        let contactY = b.y + ny * R;
+        return {
+          hit:true, x:contactX, y:contactY, ball:b,
+          nx, ny, dx, dy,
+          dist: Math.hypot(contactX - x0, contactY - y0)
+        };
+      }
+    }
+
+    // Stop if we've gone far enough
+    let traveled = Math.hypot(cx - x0, cy - y0);
+    if (traveled > AIM_LINE_MAX_LEN) break;
+  }
+  return {hit:false, x:cx, y:cy, dx, dy, dist: Math.hypot(cx - x0, cy - y0)};
+}
+
+/**
+ * Returns the closest pocket a ball could fall into given a direction,
+ * or null if none is reasonably aligned.
+ */
+function findAimedPocket(ballX, ballY, dx, dy) {
+  let best = null, bestScore = Infinity;
+  for (let p of pockets) {
+    let toX = p.x - ballX, toY = p.y - ballY;
+    let distToPocket = Math.hypot(toX, toY);
+    if (distToPocket < 1) continue;
+    let ndx = toX / distToPocket, ndy = toY / distToPocket;
+    // Dot product: how aligned is the ball's direction with this pocket?
+    let dot = ndx * dx + ndy * dy;
+    if (dot < 0.85) continue; // must be fairly direct
+    // Score: prefer closer pockets and better alignment
+    let score = distToPocket * (2 - dot);
+    if (score < bestScore) {
+      bestScore = score;
+      best = {pocket:p, dot, dist:distToPocket};
+    }
+  }
+  return best;
+}
+
+function drawAimAssist() {
+  if (!aim || ballInHand || gameOver || simulating) return;
+
+  let q = balls[0];
+  let dx = q.x - mouse.x, dy = q.y - mouse.y;
+  let d = Math.hypot(dx, dy);
+  if (d < 4) return;
+
+  let nx = dx / d, ny = dy / d;
+
+  // ---------- 1. Raycast to first collision ----------
+  let hit = raycastToFirstBall(q.x, q.y, nx, ny, q);
+
+  // ---------- 2. Draw cue ball trajectory line ----------
+  let lineEndX, lineEndY;
+  if (hit.hit) {
+    lineEndX = hit.x; lineEndY = hit.y;
+  } else {
+    // No hit — line extends to max length (with wall bounces drawn separately)
+    lineEndX = q.x + nx * AIM_LINE_MAX_LEN;
+    lineEndY = q.y + ny * AIM_LINE_MAX_LEN;
+  }
+
+  // Draw the main aim line (dashed, glowing)
+  x.save();
+  x.setLineDash([10, 7]);
+  x.lineWidth = 2.5;
+  x.strokeStyle = "rgba(255,255,255,.85)";
+  x.shadowColor = theme.aimColor;
+  x.shadowBlur = 8;
+  x.beginPath();
+  x.moveTo(q.x, q.y);
+  x.lineTo(lineEndX, lineEndY);
+  x.stroke();
+  x.restore();
+
+  // ---------- 3. Draw ghost ball at impact point ----------
+  if (hit.hit && hit.ball) {
+    // Ghost cue ball (dashed outline)
+    x.save();
+    x.setLineDash([4, 3]);
+    x.strokeStyle = "rgba(255,255,255,.9)";
+    x.lineWidth = 2;
+    x.beginPath();
+    x.arc(hit.x, hit.y, R, 0, Math.PI * 2);
+    x.stroke();
+    x.restore();
+
+    // Soft fill for the ghost ball
+    let ghostGrad = x.createRadialGradient(hit.x, hit.y, 2, hit.x, hit.y, R);
+    ghostGrad.addColorStop(0, "rgba(255,255,255,.15)");
+    ghostGrad.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = ghostGrad;
+    x.beginPath();
+    x.arc(hit.x, hit.y, R, 0, Math.PI * 2);
+    x.fill();
+
+    // ---------- 4. Object ball predicted direction ----------
+    // The object ball moves along the line from ghost ball center to object ball center.
+    let obx = hit.ball.x - hit.x;
+    let oby = hit.ball.y - hit.y;
+    let obd = Math.hypot(obx, oby) || 1;
+    let objNx = obx / obd, objNy = oby / obd;
+
+    // Object ball line (solid, colored)
+    let objLineLen = 240;
+    let objEndX = hit.ball.x + objNx * objLineLen;
+    let objEndY = hit.ball.y + objNy * objLineLen;
+
+    // Clip to table bounds
+    let objLine = clipLineToTable(hit.ball.x, hit.ball.y, objEndX, objEndY);
+
+    x.save();
+    x.lineWidth = 3;
+    x.strokeStyle = "rgba(46,204,113,.95)";
+    x.shadowColor = "#2ecc71";
+    x.shadowBlur = 10;
+    x.beginPath();
+    x.moveTo(hit.ball.x, hit.ball.y);
+    x.lineTo(objLine.x, objLine.y);
+    x.stroke();
+    x.restore();
+
+    // ---------- 5. Check if object ball is aimed at a pocket ----------
+    let aimed = findAimedPocket(hit.ball.x, hit.ball.y, objNx, objNy);
+    if (aimed) {
+      // Highlight the pocket
+      x.save();
+      let pulse = Math.sin(Date.now() * .008) * 0.15 + 0.85;
+      x.strokeStyle = `rgba(255,211,77,${pulse})`;
+      x.shadowColor = "#ffd34d";
+      x.shadowBlur = 15;
+      x.lineWidth = 3;
+      x.beginPath();
+      x.arc(aimed.pocket.x, aimed.pocket.y, 30, 0, Math.PI * 2);
+      x.stroke();
+
+      // Dotted line from object ball to pocket
+      x.setLineDash([5, 6]);
+      x.lineWidth = 1.5;
+      x.strokeStyle = "rgba(255,211,77,.6)";
+      x.beginPath();
+      x.moveTo(hit.ball.x, hit.ball.y);
+      x.lineTo(aimed.pocket.x, aimed.pocket.y);
+      x.stroke();
+      x.restore();
+    }
+
+    // ---------- 6. Cue ball deflection (tangent line) ----------
+    // After collision, cue ball deflects along the tangent perpendicular to the impact normal.
+    // Tangent direction = perpendicular to (objNx, objNy), flipped to match incoming direction.
+    let tanX = -objNy, tanY = objNx;
+    // Ensure tangent points away from the object ball (dot with incoming should be > 0)
+    if (tanX * nx + tanY * ny < 0) { tanX = -tanX; tanY = -tanY; }
+
+    let cueLineLen = 140;
+    let cueEndX = hit.x + tanX * cueLineLen;
+    let cueEndY = hit.y + tanY * cueLineLen;
+    let cueLine = clipLineToTable(hit.x, hit.y, cueEndX, cueEndY);
+
+    x.save();
+    x.setLineDash([6, 5]);
+    x.lineWidth = 2;
+    x.strokeStyle = "rgba(255,180,120,.85)";
+    x.shadowColor = "#ffb478";
+    x.shadowBlur = 6;
+    x.beginPath();
+    x.moveTo(hit.x, hit.y);
+    x.lineTo(cueLine.x, cueLine.y);
+    x.stroke();
+    x.restore();
+
+    // ---------- 7. Impact point marker ----------
+    x.save();
+    let pulse2 = Math.sin(Date.now() * .01) * 2 + 6;
+    x.fillStyle = "rgba(255,211,77,.9)";
+    x.shadowColor = "#ffd34d";
+    x.shadowBlur = 12;
+    x.beginPath();
+    x.arc(hit.x, hit.y, pulse2, 0, Math.PI * 2);
+    x.fill();
+    x.restore();
+  } else {
+    // No collision — draw bounces and infinite line fading out
+    // Just draw a fading gradient line
+    let grad = x.createLinearGradient(q.x, q.y, lineEndX, lineEndY);
+    grad.addColorStop(0, "rgba(255,255,255,.85)");
+    grad.addColorStop(1, "rgba(255,255,255,0)");
+    x.save();
+    x.setLineDash([10, 7]);
+    x.lineWidth = 2.5;
+    x.strokeStyle = grad;
+    x.beginPath();
+    x.moveTo(q.x, q.y);
+    x.lineTo(lineEndX, lineEndY);
+    x.stroke();
+    x.restore();
+  }
+
+  // ---------- 8. Cue stick ----------
+  let cueStart = 42;
+  let cueEnd = 210;
+  let cx1 = q.x - nx * cueStart, cy1 = q.y - ny * cueStart;
+  let cx2 = q.x - nx * cueEnd, cy2 = q.y - ny * cueEnd;
+
+  // Cue shadow
+  x.strokeStyle = "rgba(0,0,0,.3)";
+  x.lineWidth = 7;
+  x.beginPath(); x.moveTo(cx1+2, cy1+2); x.lineTo(cx2+2, cy2+2); x.stroke();
+
+  // Cue body with gradient
+  let cueGrad = x.createLinearGradient(cx1, cy1, cx2, cy2);
+  cueGrad.addColorStop(0, "#d4a030");
+  cueGrad.addColorStop(.15, "#c49a3c");
+  cueGrad.addColorStop(.85, "#5a3a1a");
+  cueGrad.addColorStop(1, "#3a2010");
+  x.strokeStyle = cueGrad;
+  x.lineWidth = 5;
+  x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx2, cy2); x.stroke();
+
+  // Cue tip
+  x.strokeStyle = "#f0f0f0";
+  x.lineWidth = 5;
+  x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx*7, cy1 - ny*7); x.stroke();
+
+  // Cue highlight
+  x.strokeStyle = "rgba(255,255,255,.25)";
+  x.lineWidth = 1.5;
+  x.beginPath();
+  x.moveTo(cx1 - ny*1.5, cy1 + nx*1.5);
+  x.lineTo(cx2 - ny*1.5, cy2 + nx*1.5);
+  x.stroke();
+}
+
+/**
+ * Clips a line from (x0,y0) to (x1,y1) against the table bounds.
+ * Returns the endpoint clipped to the rail.
+ */
+function clipLineToTable(x0, y0, x1, y1) {
+  let dx = x1 - x0, dy = y1 - y0;
+  let t = 1;
+  let minX = rail + R, maxX = W - rail - R;
+  let minY = rail + R, maxY = H - rail - R;
+
+  if (x1 < minX) t = Math.min(t, (minX - x0) / (dx || 1));
+  if (x1 > maxX) t = Math.min(t, (maxX - x0) / (dx || 1));
+  if (y1 < minY) t = Math.min(t, (minY - y0) / (dy || 1));
+  if (y1 > maxY) t = Math.min(t, (maxY - y0) / (dy || 1));
+
+  if (t < 0) t = 0;
+  if (t > 1) t = 1;
+  return {x: x0 + dx * t, y: y0 + dy * t};
+}
+
+/* =========================================================
+   PHYSICS
+   ========================================================= */
 function physics(dt) {
   let active = balls.filter(b => b.active);
 
@@ -936,7 +1223,6 @@ function physics(dt) {
     if (Math.hypot(b.vx,b.vy) < MIN_SPEED) { b.vx = 0; b.vy = 0; }
     if (Math.abs(b.spin) < MIN_SPEED) b.spin = 0;
 
-    // Pockets
     for (let p of pockets) {
       if (Math.hypot(b.x-p.x, b.y-p.y) < 26) {
         b.active = false; b.vx = b.vy = b.spin = 0;
@@ -947,14 +1233,12 @@ function physics(dt) {
     }
     if (!b.active) continue;
 
-    // Walls
     if (b.x < rail + R) { b.x = rail + R; b.vx = Math.abs(b.vx)*WALL_BOUNCE; playHitSound(); }
     if (b.x > W - rail - R) { b.x = W - rail - R; b.vx = -Math.abs(b.vx)*WALL_BOUNCE; playHitSound(); }
     if (b.y < rail + R) { b.y = rail + R; b.vy = Math.abs(b.vy)*WALL_BOUNCE; playHitSound(); }
     if (b.y > H - rail - R) { b.y = H - rail - R; b.vy = -Math.abs(b.vy)*WALL_BOUNCE; playHitSound(); }
   }
 
-  // Ball collisions
   for (let i = 0; i < active.length; i++) {
     for (let j = i+1; j < active.length; j++) {
       let a = active[i], b = active[j];
@@ -975,11 +1259,13 @@ function physics(dt) {
   }
 }
 
-// ----- DRAW (Enhanced Graphics) -----
+/* =========================================================
+   DRAW
+   ========================================================= */
 function draw() {
   x.clearRect(0,0,W,H);
 
-  // Rails with gradient
+  // Rails
   let railGrad = x.createLinearGradient(0, 0, 0, H);
   railGrad.addColorStop(0, theme.rail1);
   railGrad.addColorStop(.3, theme.rail2);
@@ -989,7 +1275,7 @@ function draw() {
   x.fillStyle = railGrad;
   x.fillRect(0, 0, W, H);
 
-  // Rail inner highlight
+  // Rail highlight
   let railHi = x.createLinearGradient(0, rail-4, 0, rail+4);
   railHi.addColorStop(0, "rgba(255,255,255,.08)");
   railHi.addColorStop(1, "rgba(0,0,0,.2)");
@@ -997,7 +1283,7 @@ function draw() {
   x.fillRect(rail-2, rail-4, W-rail*2+4, 4);
   x.fillRect(rail-2, H-rail, W-rail*2+4, 4);
 
-  // Table felt with radial gradient
+  // Felt
   let tableGrad = x.createRadialGradient(W/2, H/2, 20, W/2, H/2, 400);
   tableGrad.addColorStop(0, theme.felt0);
   tableGrad.addColorStop(0.55, theme.felt1);
@@ -1005,7 +1291,7 @@ function draw() {
   x.fillStyle = tableGrad;
   x.fillRect(rail, rail, W-rail*2, H-rail*2);
 
-  // Cloth texture noise
+  // Cloth texture
   x.strokeStyle = theme.clothGlow;
   x.lineWidth = 1;
   for (let i = 0; i < 25; i++) {
@@ -1015,26 +1301,23 @@ function draw() {
     x.stroke();
   }
 
-  // Subtle center glow
+  // Center glow
   let glowGrad = x.createRadialGradient(W/2, H/2, 20, W/2, H/2, 250);
   glowGrad.addColorStop(0, "rgba(255,255,255,.02)");
   glowGrad.addColorStop(1, "rgba(0,0,0,0)");
   x.fillStyle = glowGrad;
   x.fillRect(rail, rail, W-rail*2, H-rail*2);
 
-  // Pockets with depth
+  // Pockets
   for (let p of pockets) {
-    // Outer ring
     x.beginPath(); x.arc(p.x, p.y, 30, 0, Math.PI*2);
     x.strokeStyle = "rgba(0,0,0,.6)"; x.lineWidth = 3; x.stroke();
-    // Pocket hole with radial gradient
     let sg = x.createRadialGradient(p.x, p.y, 3, p.x, p.y, 28);
     sg.addColorStop(0, "#000");
     sg.addColorStop(.7, "#050505");
     sg.addColorStop(1, "#1a1a1a");
     x.beginPath(); x.arc(p.x, p.y, 28, 0, Math.PI*2);
     x.fillStyle = sg; x.fill();
-    // Inner shadow
     let innerGrad = x.createRadialGradient(p.x, p.y-3, 2, p.x, p.y, 20);
     innerGrad.addColorStop(0, "rgba(255,255,255,.05)");
     innerGrad.addColorStop(1, "rgba(0,0,0,.8)");
@@ -1048,13 +1331,11 @@ function draw() {
   for (let b of balls) {
     if (!b.active) continue;
 
-    // Shadow
     x.beginPath();
     x.ellipse(b.x+3, b.y+4, R+2, R*.7, 0, 0, Math.PI*2);
     x.fillStyle = "rgba(0,0,0,.45)";
     x.fill();
 
-    // Ball body with 3D gradient
     let ballGrad = x.createRadialGradient(
       b.x - R*.35, b.y - R*.4, R*.05,
       b.x, b.y, R
@@ -1067,7 +1348,6 @@ function draw() {
     x.beginPath(); x.arc(b.x, b.y, R, 0, Math.PI*2);
     x.fillStyle = ballGrad; x.fill();
 
-    // Specular highlight
     x.beginPath();
     x.arc(b.x - R*.35, b.y - R*.4, R*.28, 0, Math.PI*2);
     let specGrad = x.createRadialGradient(
@@ -1078,11 +1358,9 @@ function draw() {
     specGrad.addColorStop(1, "rgba(255,255,255,0)");
     x.fillStyle = specGrad; x.fill();
 
-    // Rim shadow
     x.beginPath(); x.arc(b.x, b.y, R, 0, Math.PI*2);
     x.strokeStyle = "rgba(0,0,0,.4)"; x.lineWidth = 1; x.stroke();
 
-    // Number circle
     if (b.num) {
       x.beginPath(); x.arc(b.x, b.y, 5.5, 0, Math.PI*2);
       x.fillStyle = "rgba(255,255,255,.95)"; x.fill();
@@ -1094,39 +1372,33 @@ function draw() {
     }
   }
 
-  // Aiming
-  if (aim && !ballInHand) {
+  // Aim assist
+  if (aimAssist) {
+    drawAimAssist();
+  } else if (aim && !ballInHand) {
+    // Simple cue stick when aim assist is off
     let q = balls[0];
-    let dx = q.x - mouse.x, dy = q.y - mouse.y, d = Math.hypot(dx,dy);
-    if (d) {
-      let nx = dx/d, ny = dy/d, pwr = Math.min(d, MAX_DRAG)/MAX_DRAG;
-
-      // Aim line
+    let dx = q.x - mouse.x, dy = q.y - mouse.y;
+    let d = Math.hypot(dx, dy);
+    if (d > 4) {
+      let nx = dx / d, ny = dy / d;
+      // Simple line
+      x.save();
       x.setLineDash([8, 6]);
-      x.strokeStyle = `rgba(255,255,255,${.4 + pwr*.5})`;
+      x.strokeStyle = "rgba(255,255,255,.6)";
       x.lineWidth = 2;
       x.beginPath();
       x.moveTo(q.x, q.y);
-      x.lineTo(q.x + nx*260, q.y + ny*260);
+      x.lineTo(q.x + nx * 200, q.y + ny * 200);
       x.stroke();
-      x.setLineDash([]);
-
-      // Power glow
-      x.fillStyle = `rgba(255,211,77,${pwr*.35})`;
-      x.beginPath(); x.arc(q.x, q.y, 10 + pwr*20, 0, Math.PI*2); x.fill();
+      x.restore();
 
       // Cue stick
-      let cueStart = 40;
-      let cueEnd = 200;
-      let cx1 = q.x - nx*cueStart, cy1 = q.y - ny*cueStart;
-      let cx2 = q.x - nx*cueEnd, cy2 = q.y - ny*cueEnd;
-
-      // Cue shadow
+      let cx1 = q.x - nx * 42, cy1 = q.y - ny * 42;
+      let cx2 = q.x - nx * 210, cy2 = q.y - ny * 210;
       x.strokeStyle = "rgba(0,0,0,.3)";
       x.lineWidth = 7;
       x.beginPath(); x.moveTo(cx1+2, cy1+2); x.lineTo(cx2+2, cy2+2); x.stroke();
-
-      // Cue body
       let cueGrad = x.createLinearGradient(cx1, cy1, cx2, cy2);
       cueGrad.addColorStop(0, "#d4a030");
       cueGrad.addColorStop(.15, "#c49a3c");
@@ -1135,19 +1407,9 @@ function draw() {
       x.strokeStyle = cueGrad;
       x.lineWidth = 5;
       x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx2, cy2); x.stroke();
-
-      // Cue tip
       x.strokeStyle = "#f0f0f0";
       x.lineWidth = 5;
-      x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx*6, cy1 - ny*6); x.stroke();
-
-      // Cue highlight
-      x.strokeStyle = "rgba(255,255,255,.25)";
-      x.lineWidth = 1.5;
-      x.beginPath();
-      x.moveTo(cx1 - ny*1.5, cy1 + nx*1.5);
-      x.lineTo(cx2 - ny*1.5, cy2 + nx*1.5);
-      x.stroke();
+      x.beginPath(); x.moveTo(cx1, cy1); x.lineTo(cx1 - nx*7, cy1 - ny*7); x.stroke();
     }
   }
 
@@ -1177,7 +1439,6 @@ function draw() {
   updatePower();
 }
 
-// ----- MAIN LOOP -----
 function loop() {
   if (gameOver) return;
   physics(.016);
@@ -1185,7 +1446,9 @@ function loop() {
   raf = requestAnimationFrame(loop);
 }
 
-// ----- INPUT -----
+/* =========================================================
+   INPUT HANDLERS
+   ========================================================= */
 function handleDown(p) {
   if (gameOver || aiThinking || simulating) return;
   let cue = balls[0];
@@ -1202,10 +1465,10 @@ function handleDown(p) {
     return;
   }
 
-  if (cue.active && Math.hypot(p.x-cue.x, p.y-cue.y) < 50) {
-    aim = true;
-    mouse = p;
-  }
+  // Aim from anywhere on the table, not just near the cue ball.
+  // This makes mobile play much easier.
+  aim = true;
+  mouse = p;
 }
 
 function handleMove(p) {
@@ -1230,7 +1493,7 @@ function handleUp(p) {
   if (!aim || aiThinking || simulating) return;
   aim = false;
   let q = balls[0], dx = q.x-p.x, dy = q.y-p.y, d = Math.hypot(dx,dy);
-  if (d < 8) return;
+  if (d < 12) return; // require meaningful drag
 
   let power = Math.min(d, MAX_DRAG) * POWER_SCALE;
   let nx = dx/d, ny = dy/d;
@@ -1244,52 +1507,48 @@ function handleUp(p) {
   update();
 }
 
-// Mouse events
 c.addEventListener("pointerdown", e => {
   e.preventDefault();
-  let p = pos(e);
-  handleDown(p);
+  handleDown(pos(e));
 });
 c.addEventListener("pointermove", e => {
-  let p = pos(e);
-  handleMove(p);
+  handleMove(pos(e));
 });
 c.addEventListener("pointerup", e => {
-  let p = pos(e);
-  handleUp(p);
+  handleUp(pos(e));
+});
+c.addEventListener("pointercancel", e => {
+  aim = false;
 });
 c.addEventListener("pointerleave", e => {
-  // On desktop, if pointer leaves during aim, still allow release elsewhere
+  // On desktop, don't cancel aim when pointer leaves — user may drag outside
 });
 
-// Touch fallback for older mobile
 c.addEventListener("touchstart", e => {
   if (e.touches.length > 1) return;
   e.preventDefault();
-  let p = pos(e.touches[0]);
-  handleDown(p);
+  handleDown(pos(e.touches[0]));
 }, {passive:false});
 
 c.addEventListener("touchmove", e => {
   e.preventDefault();
   if (e.touches.length > 0) {
-    let p = pos(e.touches[0]);
-    handleMove(p);
+    handleMove(pos(e.touches[0]));
   }
 }, {passive:false});
 
 c.addEventListener("touchend", e => {
   e.preventDefault();
   if (e.changedTouches.length > 0) {
-    let p = pos(e.changedTouches[0]);
-    handleUp(p);
+    handleUp(pos(e.changedTouches[0]));
   }
 }, {passive:false});
 
-// Prevent context menu on long press
 c.addEventListener("contextmenu", e => e.preventDefault());
 
-// ----- HIGH SCORES -----
+/* =========================================================
+   HIGH SCORES & UI
+   ========================================================= */
 function saveHighScore(p, s) {
   try {
     let hs = JSON.parse(localStorage.getItem("waseemPoolScores")||"[]");
@@ -1309,7 +1568,6 @@ function showHighScores() {
   return html;
 }
 
-// ----- OVERLAYS -----
 function showOverlay() {
   overlay.classList.add("show");
   document.getElementById("highscoresWin").innerHTML = showHighScores();
@@ -1324,7 +1582,6 @@ function hideHelp() {
   helpOverlay.classList.remove("show");
 }
 
-// ----- THEME -----
 const themeKeys = ["classic", "midnight", "royal", "crimson"];
 function cycleTheme() {
   let idx = themeKeys.indexOf(themeKey);
@@ -1342,14 +1599,18 @@ function applyThemeToDOM() {
   if (themeKey === "crimson") wrap.classList.add("theme-classic");
 }
 
-// ----- SOUND TOGGLE -----
 function toggleSound() {
   soundEnabled = !soundEnabled;
   document.getElementById("soundIco").textContent = soundEnabled ? "🔊" : "🔇";
   showToast(soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF");
 }
 
-// ----- MODE SELECTION -----
+function toggleAimAssist() {
+  aimAssist = !aimAssist;
+  document.getElementById("aimAssistToggle").classList.toggle("on", aimAssist);
+  showToast(aimAssist ? "🎯 Aim Assist ON" : "🎯 Aim Assist OFF", aimAssist);
+}
+
 function setMode(m) {
   mode = m;
   document.querySelectorAll('.tool-btn').forEach(b => {
@@ -1370,16 +1631,12 @@ function setGameMode(g) {
   showToast(`🎱 ${g.toUpperCase()} mode`, true);
 }
 
-// ----- EVENT LISTENERS -----
 document.getElementById("modeVs").onclick = () => setMode("vs");
 document.getElementById("modeAi").onclick = () => setMode("ai");
 document.getElementById("mode8ball").onclick = () => setGameMode("8ball");
 document.getElementById("mode9ball").onclick = () => setGameMode("9ball");
 document.getElementById("modeStraight").onclick = () => setGameMode("straight");
-document.getElementById("restart").onclick = () => {
-  reset();
-  showToast("🔄 New game started", true);
-};
+document.getElementById("restart").onclick = () => { reset(); showToast("🔄 New game started", true); };
 document.getElementById("undo").onclick = undo;
 document.getElementById("themeBtn").onclick = cycleTheme;
 document.getElementById("helpBtn").onclick = showHelp;
@@ -1387,12 +1644,11 @@ document.getElementById("soundBtn").onclick = toggleSound;
 document.getElementById("closeHelp").onclick = hideHelp;
 document.getElementById("rematch").onclick = () => { hideOverlay(); reset(); showToast("🔄 Rematch!", true); };
 document.getElementById("home").onclick = hideOverlay;
+document.getElementById("aimAssistToggle").onclick = toggleAimAssist;
 
-// Init audio on first interaction
 document.body.addEventListener("pointerdown", () => initAudio(), {once:true});
 document.body.addEventListener("touchstart", () => initAudio(), {once:true});
 
-// Keyboard shortcuts
 window.addEventListener("keydown", e => {
   if (e.key === "z" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); undo(); }
   if (e.key === "r" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); reset(); }
@@ -1400,16 +1656,15 @@ window.addEventListener("keydown", e => {
   if (e.key === "h" || e.key === "?") showHelp();
   if (e.key === "t") cycleTheme();
   if (e.key === "m") toggleSound();
+  if (e.key === "a") toggleAimAssist();
 });
 
-// Resize observer for better responsiveness
 if (window.ResizeObserver) {
   new ResizeObserver(() => resizeCanvas()).observe(document.querySelector(".tableWrap"));
 }
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 200));
 
-// ----- START -----
 timerEnabled = true;
 theme = themes.classic;
 applyThemeToDOM();
